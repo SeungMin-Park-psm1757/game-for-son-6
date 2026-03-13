@@ -2,6 +2,8 @@
 
 메인 문서는 [README.md](./README.md) 입니다.
 
+게임 링크: [https://seungmin-park-psm1757.github.io/game-for-son-6/](https://seungmin-park-psm1757.github.io/game-for-son-6/)
+
 이 저장소는 모바일 웹 우선의 오리지널 1대1 아케이드 축구 게임을 구현한 프로젝트입니다.
 
 - Phaser 3 + TypeScript + Vite

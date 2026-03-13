@@ -3,6 +3,8 @@
 원작 IP를 복제하지 않고, 모바일 웹에 맞게 새로 만든 1대1 아케이드 축구 게임입니다.  
 큰 머리 캐릭터, 짧은 경기, 단순한 조작, 파워샷과 필살기, 로컬 저장 기반 언락 구조를 MVP 범위로 구현했습니다.
 
+게임 링크: [Play GoalPop Arena Web](https://seungmin-park-psm1757.github.io/game-for-son-6/)
+
 ![Title Screen](./docs/title-screen.png)
 
 ![Match Screen](./docs/match-screen.png)
@@ -58,6 +60,12 @@
 - 총 득점이 누적되면 `Neon Night` 경기장 해금
 
 ## 빠른 실행
+
+배포 버전:
+
+```text
+https://seungmin-park-psm1757.github.io/game-for-son-6/
+```
 
 ```bash
 npm install
@@ -135,4 +143,3 @@ docs/
 ## 원본성 가이드
 
 이 프로젝트는 캐주얼 빅헤드 축구 장르의 감각만 참고했고, 특정 게임/브랜드/선수/구단/국기/로고/UI를 복제하지 않았습니다.
-
