@@ -1,0 +1,31 @@
+{
+  "name": "game-for-son-6",
+  "version": "1.0.0",
+  "description": "GoalPop Arena Web - an original lightweight 1v1 arcade soccer webapp",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "phaser",
+    "vite",
+    "typescript",
+    "arcade-soccer",
+    "mobile-web-game"
+  ],
+  "author": "OpenAI Codex",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "jsdom": "^28.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
+  }
+}

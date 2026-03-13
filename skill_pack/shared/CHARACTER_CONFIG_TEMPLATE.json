@@ -1,0 +1,18 @@
+{
+  "id": "blaze",
+  "displayName": "Blaze",
+  "archetype": "striker",
+  "colors": [
+    "#ff7a18",
+    "#1f1f1f",
+    "#ffe2c2"
+  ],
+  "stats": {
+    "moveSpeed": 1.05,
+    "jumpPower": 1.0,
+    "kickPower": 1.12,
+    "specialChargeRate": 1.0
+  },
+  "specialId": "fire_shot",
+  "unlockCost": 0
+}

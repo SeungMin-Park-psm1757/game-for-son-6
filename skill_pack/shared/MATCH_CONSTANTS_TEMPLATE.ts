@@ -1,0 +1,15 @@
+export const MATCH_CONSTANTS = {
+  matchDurationMs: 45_000,
+  overtimeDurationMs: 15_000,
+  kickoffDelayMs: 1000,
+  goalFreezeMs: 800,
+  moveSpeed: 280,
+  airMoveSpeed: 220,
+  jumpVelocity: -560,
+  gravityY: 1400,
+  kickCooldownMs: 280,
+  specialCooldownMs: 5000,
+  ballMaxSpeed: 980,
+  ballBounce: 0.92,
+  wallDamping: 0.96,
+};
