@@ -71,6 +71,21 @@ canvas {
   line-height: 1.4;
 }
 
+.rotate-card button {
+  margin-top: 18px;
+  border: 3px solid #f4f7ff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: #ffcb63;
+  color: #082030;
+  font: inherit;
+  font-weight: 700;
+}
+
+body.rotate-dismissed #rotate-prompt {
+  display: none !important;
+}
+
 @media (orientation: portrait) and (max-width: 1024px) {
   #rotate-prompt {
     display: flex;
