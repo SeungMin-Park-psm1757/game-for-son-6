@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="132" viewBox="0 0 120 132">
+  <defs>
+    <linearGradient id="atlasHead" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f6d7bb" />
+      <stop offset="1" stop-color="#ddb08d" />
+    </linearGradient>
+    <linearGradient id="atlasShirt" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#61d890" />
+      <stop offset="1" stop-color="#1e8350" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="60" cy="126" rx="24" ry="4" fill="#1c3a47" opacity=".22" />
+  <path d="M20 48c0-19 17-34 39-34s40 15 40 34-18 36-40 36S20 67 20 48z" fill="#183646" />
+  <path d="M24 48c0-17 15-31 35-31s36 14 36 31-16 33-36 33S24 66 24 48z" fill="url(#atlasHead)" />
+  <path d="M25 44c2-15 17-28 34-28 16 0 30 9 34 24-7-7-14-10-24-10-17 0-26 8-44 14z" fill="#30343e" />
+  <ellipse cx="46" cy="50" rx="4" ry="5" fill="#173747" />
+  <ellipse cx="70" cy="50" rx="4" ry="5" fill="#173747" />
+  <path d="M52 62c4 4 12 4 16 0" fill="none" stroke="#a46859" stroke-linecap="round" stroke-width="3" />
+  <path d="M40 82h40c9 0 15 6 15 14v18H25V96c0-8 6-14 15-14z" fill="#163747" />
+  <path d="M42 83h36c9 0 14 5 14 13v16H28V96c0-8 5-13 14-13z" fill="url(#atlasShirt)" />
+  <path d="M48 87h24v23H48z" fill="#e8fff0" opacity=".94" />
+  <path d="M61 88c-7 4-10 10-10 16 0 0 6-4 10-4 5 0 10 4 10 4 0-6-4-12-10-16z" fill="#f2fff6" />
+  <path d="M55 95h12v10H55z" fill="#3aa96c" />
+  <path d="M27 91c-4 4-6 9-6 14v7h8V91z" fill="#e7bb96" />
+  <path d="M93 91c4 4 6 9 6 14v7h-8V91z" fill="#e7bb96" />
+  <path d="M43 112h12v14H43z" fill="#173747" />
+  <path d="M65 112h12v14H65z" fill="#173747" />
+  <path d="M40 124h17v4H40z" fill="#e4fff1" />
+  <path d="M63 124h17v4H63z" fill="#e4fff1" />
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="132" viewBox="0 0 120 132">
+  <defs>
+    <linearGradient id="boltHead" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffe1c2" />
+      <stop offset="1" stop-color="#f0bf9b" />
+    </linearGradient>
+    <linearGradient id="boltShirt" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#6ed4ff" />
+      <stop offset="1" stop-color="#2d88cf" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="60" cy="126" rx="22" ry="4" fill="#1c3a47" opacity=".22" />
+  <path d="M22 46c3-20 18-31 39-31 16 0 31 8 37 28-8-5-17-9-26-8-16 0-22 10-50 11z" fill="#234d71" />
+  <path d="M20 47c0-18 18-33 40-33s40 15 40 33-18 37-40 37S20 65 20 47z" fill="#173747" />
+  <path d="M23 47c0-17 17-30 37-30s37 13 37 30-17 34-37 34S23 64 23 47z" fill="url(#boltHead)" />
+  <path d="M30 34c12-3 23-18 45-11 11 4 18 13 20 24-8-7-16-10-24-10-15 0-24 9-41 10z" fill="#234d71" />
+  <ellipse cx="47" cy="49" rx="4" ry="5" fill="#173747" />
+  <ellipse cx="71" cy="49" rx="4" ry="5" fill="#173747" />
+  <path d="M54 61c2 4 10 5 13 0" fill="none" stroke="#b7775c" stroke-linecap="round" stroke-width="3" />
+  <path d="M42 80h36c7 0 12 5 12 12v22H30V92c0-7 5-12 12-12z" fill="#163a48" />
+  <path d="M44 81h32c7 0 12 5 12 12v19H32V93c0-7 5-12 12-12z" fill="url(#boltShirt)" />
+  <path d="M51 87h18v23H51z" fill="#eaf9ff" opacity=".95" />
+  <path d="M62 89l-9 11h7l-3 8 10-13h-7z" fill="#ffe271" />
+  <path d="M30 88c-4 4-6 8-7 15v9h9z" fill="#f4c49a" />
+  <path d="M90 88c4 4 7 8 7 15v9h-9z" fill="#f4c49a" />
+  <path d="M44 112h11v14H44z" fill="#173747" />
+  <path d="M65 112h11v14H65z" fill="#173747" />
+  <path d="M42 124h15v4H42z" fill="#ffe271" />
+  <path d="M63 124h15v4H63z" fill="#ffe271" />
+</svg>

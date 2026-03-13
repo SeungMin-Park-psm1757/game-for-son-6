@@ -1,12 +1,16 @@
 import Phaser from 'phaser';
 import { TEXT_STYLES } from '../constants/ui';
-import { ensureTextures } from '../services/TextureFactory';
+import { queueArtAssets } from '../services/TextureFactory';
 
 export class PreloadScene extends Phaser.Scene {
   private fallbackTimer: number | null = null;
 
   constructor() {
     super('PreloadScene');
+  }
+
+  preload(): void {
+    queueArtAssets(this);
   }
 
   create(): void {
@@ -18,8 +22,6 @@ export class PreloadScene extends Phaser.Scene {
     title.setOrigin(0.5);
     subtitle.setOrigin(0.5);
     barFill.setOrigin(0, 0.5);
-
-    ensureTextures(this);
 
     this.tweens.addCounter({
       from: 0,

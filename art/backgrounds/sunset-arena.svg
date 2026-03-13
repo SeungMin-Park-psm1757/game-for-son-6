@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="sunsetSky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#75c3e8" />
+      <stop offset=".36" stop-color="#f3bf79" />
+      <stop offset="1" stop-color="#f2906d" />
+    </linearGradient>
+    <linearGradient id="sunsetGrass" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#5ec678" />
+      <stop offset="1" stop-color="#2e8f55" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#sunsetSky)" />
+  <circle cx="1030" cy="134" r="84" fill="#ffd37a" opacity=".65" />
+  <circle cx="1030" cy="134" r="46" fill="#ffe8af" opacity=".75" />
+  <path d="M0 198c158-34 302-32 433-7 161 30 333 30 483-3 120-27 242-26 364 10v119H0z" fill="#a1636d" opacity=".55" />
+  <path d="M0 270c121-29 259-44 384-35 177 12 381 20 541-1 142-18 248-14 355 20v154H0z" fill="#592048" />
+  <path d="M0 358h1280v44H0z" fill="#4a163d" />
+  <g opacity=".92">
+    <rect x="0" y="382" width="1280" height="38" fill="#6f3153" />
+    <rect x="28" y="390" width="92" height="22" rx="8" fill="#ea7462" />
+    <rect x="140" y="390" width="92" height="22" rx="8" fill="#73d08e" />
+    <rect x="252" y="390" width="92" height="22" rx="8" fill="#ebe3d0" />
+    <rect x="364" y="390" width="92" height="22" rx="8" fill="#ebb96a" />
+    <rect x="476" y="390" width="92" height="22" rx="8" fill="#ea7462" />
+    <rect x="588" y="390" width="92" height="22" rx="8" fill="#73d08e" />
+    <rect x="700" y="390" width="92" height="22" rx="8" fill="#ebe3d0" />
+    <rect x="812" y="390" width="92" height="22" rx="8" fill="#ebb96a" />
+    <rect x="924" y="390" width="92" height="22" rx="8" fill="#ea7462" />
+    <rect x="1036" y="390" width="92" height="22" rx="8" fill="#73d08e" />
+    <rect x="1148" y="390" width="92" height="22" rx="8" fill="#ebe3d0" />
+  </g>
+  <g opacity=".86">
+    <rect x="0" y="214" width="1280" height="112" fill="#6b2c56" />
+    <g fill="#f9f0e4">
+      <rect x="36" y="230" width="20" height="10" rx="4" />
+      <rect x="96" y="230" width="20" height="10" rx="4" />
+      <rect x="156" y="230" width="20" height="10" rx="4" />
+      <rect x="216" y="230" width="20" height="10" rx="4" />
+      <rect x="276" y="230" width="20" height="10" rx="4" />
+      <rect x="336" y="230" width="20" height="10" rx="4" />
+      <rect x="396" y="230" width="20" height="10" rx="4" />
+      <rect x="456" y="230" width="20" height="10" rx="4" />
+      <rect x="516" y="230" width="20" height="10" rx="4" />
+      <rect x="576" y="230" width="20" height="10" rx="4" />
+      <rect x="636" y="230" width="20" height="10" rx="4" />
+      <rect x="696" y="230" width="20" height="10" rx="4" />
+      <rect x="756" y="230" width="20" height="10" rx="4" />
+      <rect x="816" y="230" width="20" height="10" rx="4" />
+      <rect x="876" y="230" width="20" height="10" rx="4" />
+      <rect x="936" y="230" width="20" height="10" rx="4" />
+      <rect x="996" y="230" width="20" height="10" rx="4" />
+      <rect x="1056" y="230" width="20" height="10" rx="4" />
+      <rect x="1116" y="230" width="20" height="10" rx="4" />
+      <rect x="1176" y="230" width="20" height="10" rx="4" />
+    </g>
+    <g fill="#f28d72">
+      <rect x="6" y="256" width="20" height="10" rx="4" />
+      <rect x="66" y="256" width="20" height="10" rx="4" />
+      <rect x="126" y="256" width="20" height="10" rx="4" />
+      <rect x="186" y="256" width="20" height="10" rx="4" />
+      <rect x="246" y="256" width="20" height="10" rx="4" />
+      <rect x="306" y="256" width="20" height="10" rx="4" />
+      <rect x="366" y="256" width="20" height="10" rx="4" />
+      <rect x="426" y="256" width="20" height="10" rx="4" />
+      <rect x="486" y="256" width="20" height="10" rx="4" />
+      <rect x="546" y="256" width="20" height="10" rx="4" />
+      <rect x="606" y="256" width="20" height="10" rx="4" />
+      <rect x="666" y="256" width="20" height="10" rx="4" />
+      <rect x="726" y="256" width="20" height="10" rx="4" />
+      <rect x="786" y="256" width="20" height="10" rx="4" />
+      <rect x="846" y="256" width="20" height="10" rx="4" />
+      <rect x="906" y="256" width="20" height="10" rx="4" />
+      <rect x="966" y="256" width="20" height="10" rx="4" />
+      <rect x="1026" y="256" width="20" height="10" rx="4" />
+      <rect x="1086" y="256" width="20" height="10" rx="4" />
+      <rect x="1146" y="256" width="20" height="10" rx="4" />
+      <rect x="1206" y="256" width="20" height="10" rx="4" />
+    </g>
+  </g>
+  <rect x="0" y="420" width="1280" height="300" fill="url(#sunsetGrass)" />
+  <g opacity=".4">
+    <rect x="0" y="420" width="110" height="300" fill="#75d98e" />
+    <rect x="220" y="420" width="120" height="300" fill="#75d98e" />
+    <rect x="440" y="420" width="120" height="300" fill="#75d98e" />
+    <rect x="660" y="420" width="120" height="300" fill="#75d98e" />
+    <rect x="880" y="420" width="120" height="300" fill="#75d98e" />
+    <rect x="1100" y="420" width="120" height="300" fill="#75d98e" />
+  </g>
+  <rect x="0" y="520" width="1280" height="6" fill="#e9f0d1" opacity=".2" />
+  <rect x="0" y="612" width="1280" height="6" fill="#275f41" opacity=".3" />
+  <rect x="0" y="680" width="1280" height="14" fill="#285d40" opacity=".4" />
+  <rect x="214" y="490" width="852" height="8" rx="4" fill="#edf6d9" opacity=".55" />
+  <rect x="214" y="654" width="852" height="8" rx="4" fill="#edf6d9" opacity=".4" />
+  <rect x="638" y="490" width="4" height="168" fill="#edf6d9" opacity=".34" />
+  <ellipse cx="640" cy="572" rx="74" ry="74" fill="none" stroke="#edf6d9" stroke-opacity=".34" stroke-width="6" />
+  <g opacity=".82" stroke="#f6f5ee" stroke-width="6">
+    <rect x="28" y="438" width="112" height="178" fill="#ffffff14" />
+    <rect x="1140" y="438" width="112" height="178" fill="#ffffff14" />
+  </g>
+  <g opacity=".42" stroke="#d9e5dc" stroke-width="2">
+    <path d="M36 454h96M36 480h96M36 506h96M36 532h96M36 558h96M36 584h96" />
+    <path d="M1148 454h96M1148 480h96M1148 506h96M1148 532h96M1148 558h96M1148 584h96" />
+    <path d="M52 444v164M68 444v164M84 444v164M100 444v164M116 444v164" />
+    <path d="M1164 444v164M1180 444v164M1196 444v164M1212 444v164M1228 444v164" />
+  </g>
+</svg>

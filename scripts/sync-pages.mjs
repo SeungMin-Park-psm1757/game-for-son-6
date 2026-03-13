@@ -4,7 +4,9 @@ import { join } from 'node:path';
 const root = process.cwd();
 const distDir = join(root, 'dist');
 const distAssetsDir = join(distDir, 'assets');
+const distArtDir = join(distDir, 'art');
 const targetAssetsDir = join(root, 'assets');
+const targetArtDir = join(root, 'art');
 const publicFaviconFile = join(root, 'public', 'favicon.svg');
 const targetFaviconFile = join(root, 'favicon.svg');
 
@@ -15,6 +17,12 @@ if (!existsSync(distAssetsDir)) {
 rmSync(targetAssetsDir, { recursive: true, force: true });
 mkdirSync(targetAssetsDir, { recursive: true });
 cpSync(distAssetsDir, targetAssetsDir, { recursive: true });
+
+if (existsSync(distArtDir)) {
+  rmSync(targetArtDir, { recursive: true, force: true });
+  mkdirSync(targetArtDir, { recursive: true });
+  cpSync(distArtDir, targetArtDir, { recursive: true });
+}
 
 const assetFiles = readdirSync(targetAssetsDir);
 const jsFile = assetFiles.find((file) => file.endsWith('.js'));

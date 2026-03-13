@@ -1,225 +1,76 @@
 import Phaser from 'phaser';
 import { CHARACTERS } from '../config/characters';
+import { STADIUMS } from '../config/stadiums';
 
 const CHARACTER_TEXTURE_PREFIX = 'character-';
-type PixelRect = [x: number, y: number, width?: number, height?: number];
+const STADIUM_TEXTURE_PREFIX = 'stadium-';
 
-function drawRoundedRect(
-  graphics: Phaser.GameObjects.Graphics,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-  color: number,
-): void {
-  graphics.fillStyle(color);
-  graphics.fillRoundedRect(x, y, width, height, radius);
+interface SvgAsset {
+  key: string;
+  path: string;
 }
 
-function fillPixelRects(
-  graphics: Phaser.GameObjects.Graphics,
-  color: number,
-  rects: PixelRect[],
-  pixelSize: number,
-): void {
-  graphics.fillStyle(color);
-
-  for (const [x, y, width = 1, height = 1] of rects) {
-    graphics.fillRect(
-      x * pixelSize,
-      y * pixelSize,
-      width * pixelSize,
-      height * pixelSize,
-    );
-  }
+function getPublicAssetPath(path: string): string {
+  return `art/${path}`;
 }
 
-function generateCharacterTexture(
-  scene: Phaser.Scene,
-  characterId: string,
-  visuals: {
-    skin: number;
-    hair: number;
-    primary: number;
-    secondary: number;
-    accent: number;
-  },
-): void {
-  const key = `${CHARACTER_TEXTURE_PREFIX}${characterId}`;
-
-  if (scene.textures.exists(key)) {
+function queueSvg(scene: Phaser.Scene, asset: SvgAsset): void {
+  if (scene.textures.exists(asset.key)) {
     return;
   }
 
-  const graphics = scene.add.graphics();
-  graphics.setVisible(false);
+  scene.load.image(asset.key, asset.path);
+}
 
-  graphics.fillStyle(0x091622);
-  graphics.fillCircle(60, 42, 34);
-  graphics.fillStyle(visuals.skin);
-  graphics.fillCircle(60, 42, 29);
+function getCharacterAssetPath(characterId: string): string {
+  return getPublicAssetPath(`characters/${characterId}.svg`);
+}
 
-  graphics.fillStyle(visuals.hair);
-  graphics.fillCircle(50, 27, 14);
-  graphics.fillCircle(70, 23, 12);
-  graphics.fillTriangle(36, 37, 56, 8, 82, 30);
-
-  graphics.fillStyle(0x091622);
-  graphics.fillCircle(49, 42, 4);
-  graphics.fillCircle(71, 42, 4);
-  graphics.fillCircle(59, 54, 3);
-  graphics.lineStyle(4, 0x091622);
-  graphics.beginPath();
-  graphics.arc(60, 58, 11, Phaser.Math.DegToRad(15), Phaser.Math.DegToRad(165));
-  graphics.strokePath();
-
-  drawRoundedRect(graphics, 40, 72, 40, 28, 8, 0x091622);
-  drawRoundedRect(graphics, 44, 74, 32, 24, 8, visuals.primary);
-  drawRoundedRect(graphics, 44, 88, 32, 12, 6, visuals.secondary);
-
-  graphics.fillStyle(0x091622);
-  graphics.fillRect(40, 78, 10, 18);
-  graphics.fillRect(70, 78, 10, 18);
-  graphics.fillRect(48, 100, 9, 18);
-  graphics.fillRect(64, 100, 9, 18);
-
-  graphics.fillStyle(visuals.accent);
-  graphics.fillCircle(60, 86, 6);
-  graphics.fillStyle(0x091622);
-  graphics.fillRect(40, 116, 19, 8);
-  graphics.fillRect(61, 116, 19, 8);
-  graphics.fillStyle(visuals.secondary);
-  graphics.fillRect(41, 117, 17, 6);
-  graphics.fillRect(62, 117, 17, 6);
-
-  graphics.generateTexture(key, 120, 132);
-  graphics.destroy();
+function getStadiumAssetPath(stadiumId: string): string {
+  return getPublicAssetPath(`backgrounds/${stadiumId}.svg`);
 }
 
 export function getCharacterTextureKey(characterId: string): string {
   return `${CHARACTER_TEXTURE_PREFIX}${characterId}`;
 }
 
-export function ensureTextures(scene: Phaser.Scene): void {
-  if (!scene.textures.exists('soccer-ball')) {
-    const graphics = scene.add.graphics();
-    graphics.setVisible(false);
+export function getStadiumTextureKey(stadiumId: string): string {
+  return `${STADIUM_TEXTURE_PREFIX}${stadiumId}`;
+}
 
-    graphics.fillStyle(0x0b1724);
-    graphics.fillCircle(24, 24, 21);
-    graphics.fillStyle(0xfaf7ef);
-    graphics.fillCircle(24, 24, 18);
-    graphics.fillStyle(0x111b2b);
-    graphics.fillCircle(24, 19, 5);
-    graphics.fillCircle(17, 28, 4);
-    graphics.fillCircle(30, 30, 4);
-    graphics.lineStyle(2, 0x111b2b, 0.9);
-    graphics.lineBetween(24, 19, 17, 28);
-    graphics.lineBetween(24, 19, 30, 30);
-    graphics.lineBetween(17, 28, 30, 30);
-    graphics.generateTexture('soccer-ball', 48, 48);
-    graphics.destroy();
-  }
-
-  if (!scene.textures.exists('spark')) {
-    const graphics = scene.add.graphics();
-    graphics.setVisible(false);
-
-    graphics.fillStyle(0xffffff);
-    graphics.fillCircle(4, 4, 4);
-    graphics.generateTexture('spark', 8, 8);
-    graphics.destroy();
-  }
-
-  if (!scene.textures.exists('pixel-chip')) {
-    const graphics = scene.add.graphics();
-    graphics.setVisible(false);
-
-    fillPixelRects(
-      graphics,
-      0xffffff,
-      [
-        [1, 0, 2, 1],
-        [0, 1, 4, 2],
-        [1, 3, 2, 1],
-      ],
-      2,
-    );
-    fillPixelRects(graphics, 0x082030, [[0, 0, 1, 1], [3, 3, 1, 1]], 2);
-    graphics.generateTexture('pixel-chip', 8, 8);
-    graphics.destroy();
-  }
-
-  if (!scene.textures.exists('pixel-star')) {
-    const graphics = scene.add.graphics();
-    graphics.setVisible(false);
-
-    fillPixelRects(
-      graphics,
-      0xffffff,
-      [
-        [3, 0, 2, 1],
-        [2, 1, 4, 1],
-        [1, 2, 6, 1],
-        [0, 3, 8, 2],
-        [1, 5, 6, 1],
-        [2, 6, 4, 1],
-        [3, 7, 2, 1],
-      ],
-      2,
-    );
-    fillPixelRects(
-      graphics,
-      0xffcb63,
-      [
-        [3, 1, 2, 1],
-        [2, 2, 4, 1],
-        [2, 3, 4, 2],
-        [2, 5, 4, 1],
-        [3, 6, 2, 1],
-      ],
-      2,
-    );
-    graphics.generateTexture('pixel-star', 16, 16);
-    graphics.destroy();
-  }
-
-  if (!scene.textures.exists('pixel-bolt')) {
-    const graphics = scene.add.graphics();
-    graphics.setVisible(false);
-
-    fillPixelRects(
-      graphics,
-      0xffffff,
-      [
-        [3, 0, 3, 1],
-        [2, 1, 3, 1],
-        [3, 2, 2, 1],
-        [2, 3, 3, 1],
-        [4, 4, 2, 1],
-        [3, 5, 2, 1],
-        [2, 6, 2, 1],
-        [1, 7, 2, 1],
-      ],
-      2,
-    );
-    fillPixelRects(
-      graphics,
-      0x53c7ff,
-      [
-        [3, 1, 2, 1],
-        [3, 3, 2, 1],
-        [3, 4, 2, 1],
-        [2, 6, 1, 1],
-      ],
-      2,
-    );
-    graphics.generateTexture('pixel-bolt', 16, 16);
-    graphics.destroy();
-  }
-
+export function queueArtAssets(scene: Phaser.Scene): void {
   for (const character of CHARACTERS) {
-    generateCharacterTexture(scene, character.id, character.visuals);
+    queueSvg(scene, {
+      key: getCharacterTextureKey(character.id),
+      path: getCharacterAssetPath(character.id),
+    });
   }
+
+  for (const stadium of STADIUMS) {
+    queueSvg(scene, {
+      key: getStadiumTextureKey(stadium.id),
+      path: getStadiumAssetPath(stadium.id),
+    });
+  }
+
+  queueSvg(scene, {
+    key: 'soccer-ball',
+    path: getPublicAssetPath('props/soccer-ball.svg'),
+  });
+  queueSvg(scene, {
+    key: 'spark',
+    path: getPublicAssetPath('effects/paint-star.svg'),
+  });
+  queueSvg(scene, {
+    key: 'pixel-star',
+    path: getPublicAssetPath('effects/paint-star.svg'),
+  });
+  queueSvg(scene, {
+    key: 'pixel-chip',
+    path: getPublicAssetPath('effects/paint-splash.svg'),
+  });
+  queueSvg(scene, {
+    key: 'pixel-bolt',
+    path: getPublicAssetPath('effects/paint-swoosh.svg'),
+  });
 }

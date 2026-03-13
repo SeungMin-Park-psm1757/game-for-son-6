@@ -625,7 +625,7 @@ export class MatchScene extends Phaser.Scene {
       ...TEXT_STYLES.title,
       fontSize: '28px',
     });
-    const detail = this.add.text(640, 382, '픽셀 불꽃이 골문을 터뜨렸다!', {
+    const detail = this.add.text(640, 382, '부드러운 붓결이 골문을 갈랐다!', {
       ...TEXT_STYLES.body,
       fontSize: '18px',
     });
