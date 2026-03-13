@@ -84,7 +84,7 @@ export class TouchControls {
     background.setScrollFactor(0);
     label.setScrollFactor(0);
     background.setInteractive(
-      new Phaser.Geom.Circle(0, 0, radius + 14),
+      new Phaser.Geom.Circle(radius, radius, radius + 14),
       Phaser.Geom.Circle.Contains,
     );
 

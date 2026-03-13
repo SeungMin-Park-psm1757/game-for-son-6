@@ -63,10 +63,10 @@ export class CharacterCard extends Phaser.GameObjects.Container {
 
     this.setSize(240, 300);
     this.setInteractive(
-      new Phaser.Geom.Rectangle(-120, -150, 240, 300),
+      new Phaser.Geom.Rectangle(0, 0, 240, 300),
       Phaser.Geom.Rectangle.Contains,
     );
-    this.on('pointerup', () => onClick(character.id));
+    this.on('pointerdown', () => onClick(character.id));
 
     scene.add.existing(this);
   }
@@ -95,4 +95,3 @@ export class CharacterCard extends Phaser.GameObjects.Container {
     );
   }
 }
-

@@ -13,9 +13,17 @@ if (window.sessionStorage.getItem(ROTATE_DISMISSED_KEY) === '1') {
   document.body.classList.add('rotate-dismissed');
 }
 
+const app = new GameApp(mount);
+const refreshScale = () => {
+  window.requestAnimationFrame(() => {
+    app.game.scale.refresh();
+  });
+};
+
 rotateContinueButton?.addEventListener('click', () => {
   window.sessionStorage.setItem(ROTATE_DISMISSED_KEY, '1');
   document.body.classList.add('rotate-dismissed');
+  refreshScale();
 });
 
-new GameApp(mount);
+window.addEventListener('resize', refreshScale, { passive: true });

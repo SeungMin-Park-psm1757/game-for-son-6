@@ -15,6 +15,7 @@ export class TextButton extends Phaser.GameObjects.Container {
   private enabled = true;
   private selected = false;
   private readonly options: Required<TextButtonOptions>;
+  private readonly hitArea: Phaser.Geom.Rectangle;
 
   constructor(
     scene: Phaser.Scene,
@@ -46,15 +47,13 @@ export class TextButton extends Phaser.GameObjects.Container {
     this.labelText.setOrigin(0.5);
     this.add([this.background, this.labelText]);
     this.setSize(this.options.width, this.options.height);
-    this.setInteractive(
-      new Phaser.Geom.Rectangle(
-        -this.options.width / 2,
-        -this.options.height / 2,
-        this.options.width,
-        this.options.height,
-      ),
-      Phaser.Geom.Rectangle.Contains,
+    this.hitArea = new Phaser.Geom.Rectangle(
+      0,
+      0,
+      this.options.width,
+      this.options.height,
     );
+    this.setInteractive(this.hitArea, Phaser.Geom.Rectangle.Contains);
 
     this.on('pointerdown', () => {
       if (!this.enabled) {
@@ -62,18 +61,10 @@ export class TextButton extends Phaser.GameObjects.Container {
       }
 
       this.setScale(0.98);
-    });
-
-    this.on('pointerup', () => {
-      this.setScale(1);
-
-      if (!this.enabled) {
-        return;
-      }
-
       onClick();
     });
 
+    this.on('pointerup', () => this.setScale(1));
     this.on('pointerout', () => this.setScale(1));
 
     scene.add.existing(this);
@@ -92,6 +83,10 @@ export class TextButton extends Phaser.GameObjects.Container {
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     this.alpha = enabled ? 1 : 0.45;
+    this.disableInteractive();
+    if (enabled) {
+      this.setInteractive(this.hitArea, Phaser.Geom.Rectangle.Contains);
+    }
     this.redraw();
   }
 
@@ -117,4 +112,3 @@ export class TextButton extends Phaser.GameObjects.Container {
     this.background.strokeRoundedRect(-width / 2, -height / 2, width, height, 22);
   }
 }
-
