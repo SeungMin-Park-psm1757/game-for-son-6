@@ -8,9 +8,12 @@ export const UI_COLORS = {
   shadow: 'rgba(0, 0, 0, 0.3)',
 };
 
+export const UI_FONT_STACK =
+  "'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif";
+
 export const TEXT_STYLES = {
   headline: {
-    fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
+    fontFamily: UI_FONT_STACK,
     fontSize: '56px',
     color: '#f8f4da',
     stroke: '#082030',
@@ -18,7 +21,7 @@ export const TEXT_STYLES = {
     fontStyle: 'bold',
   },
   title: {
-    fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
+    fontFamily: UI_FONT_STACK,
     fontSize: '30px',
     color: '#f8f4da',
     stroke: '#082030',
@@ -26,7 +29,7 @@ export const TEXT_STYLES = {
     fontStyle: 'bold',
   },
   body: {
-    fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
+    fontFamily: UI_FONT_STACK,
     fontSize: '20px',
     color: '#f8f4da',
     stroke: '#082030',

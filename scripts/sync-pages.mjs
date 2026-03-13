@@ -5,7 +5,7 @@ const root = process.cwd();
 const distDir = join(root, 'dist');
 const distAssetsDir = join(distDir, 'assets');
 const targetAssetsDir = join(root, 'assets');
-const distFaviconFile = join(distDir, 'favicon.svg');
+const publicFaviconFile = join(root, 'public', 'favicon.svg');
 const targetFaviconFile = join(root, 'favicon.svg');
 
 if (!existsSync(distAssetsDir)) {
@@ -27,6 +27,6 @@ if (!jsFile || !cssFile) {
 copyFileSync(join(targetAssetsDir, jsFile), join(targetAssetsDir, 'app.js'));
 copyFileSync(join(targetAssetsDir, cssFile), join(targetAssetsDir, 'app.css'));
 
-if (existsSync(distFaviconFile)) {
-  copyFileSync(distFaviconFile, targetFaviconFile);
+if (existsSync(publicFaviconFile)) {
+  copyFileSync(publicFaviconFile, targetFaviconFile);
 }

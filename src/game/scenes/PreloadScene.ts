@@ -10,8 +10,8 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   create(): void {
-    const title = this.add.text(640, 250, 'GoalPop Arena', TEXT_STYLES.headline);
-    const subtitle = this.add.text(640, 320, 'Loading the next absurd kickoff...', TEXT_STYLES.body);
+    const title = this.add.text(640, 250, '골팝 아레나', TEXT_STYLES.headline);
+    const subtitle = this.add.text(640, 320, '다음 킥오프를 불러오는 중...', TEXT_STYLES.body);
     const barBack = this.add.rectangle(640, 400, 500, 34, 0xffffff, 0.18);
     const barFill = this.add.rectangle(394, 400, 0, 26, 0xffcb63, 1);
 

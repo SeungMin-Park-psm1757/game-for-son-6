@@ -6,7 +6,7 @@ const mount = document.getElementById('game-shell');
 const rotateContinueButton = document.getElementById('rotate-continue');
 
 if (!mount) {
-  throw new Error('Missing #game-shell mount point.');
+  throw new Error('#game-shell 마운트 지점을 찾을 수 없습니다.');
 }
 
 if (window.sessionStorage.getItem(ROTATE_DISMISSED_KEY) === '1') {

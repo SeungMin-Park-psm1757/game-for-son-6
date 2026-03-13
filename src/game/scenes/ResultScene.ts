@@ -29,10 +29,10 @@ export class ResultScene extends Phaser.Scene {
     const saveData = saveService.getSnapshot();
     const winnerText =
       result.winner === 'player'
-        ? 'Victory'
+        ? '승리'
         : result.winner === 'cpu'
-          ? 'Defeat'
-          : 'Draw';
+          ? '패배'
+          : '무승부';
     const accent =
       result.winner === 'player'
         ? playerCharacter.visuals.primary
@@ -54,7 +54,7 @@ export class ResultScene extends Phaser.Scene {
     }
 
     this.add
-      .text(640, 108, winnerText.toUpperCase(), {
+      .text(640, 108, winnerText, {
         ...TEXT_STYLES.headline,
         color: accentHex,
       })
@@ -73,9 +73,9 @@ export class ResultScene extends Phaser.Scene {
         250,
         result.wentOvertime
           ? result.suddenDeath
-            ? 'Settled in golden goal chaos.'
-            : 'Settled after overtime pressure.'
-          : 'Regulation finished the job.',
+            ? '골든골 한 방으로 승부가 갈렸다.'
+            : '연장전 끝에 승부가 정리됐다.'
+          : '정규 시간 안에 결과가 났다.',
         TEXT_STYLES.body,
       )
       .setOrigin(0.5);
@@ -87,20 +87,20 @@ export class ResultScene extends Phaser.Scene {
     rewardPanel.strokeRoundedRect(374, 302, 532, 180, 28);
 
     this.add
-      .text(640, 350, `Match Coins +${result.coinsEarned}`, TEXT_STYLES.title)
+      .text(640, 350, `경기 코인 +${result.coinsEarned}`, TEXT_STYLES.title)
       .setOrigin(0.5);
     this.add
-      .text(640, 402, `Bonus Coins +${result.bonusCoins}`, TEXT_STYLES.body)
+      .text(640, 402, `보너스 코인 +${result.bonusCoins}`, TEXT_STYLES.body)
       .setOrigin(0.5);
     this.add
-      .text(640, 446, `Total Coins ${saveData.coins}`, TEXT_STYLES.body)
+      .text(640, 446, `현재 코인 ${saveData.coins}`, TEXT_STYLES.body)
       .setOrigin(0.5);
 
     new TextButton(
       this,
       640,
       554,
-      'REMATCH',
+      '한 판 더',
       () => {
         audioService.play('tap');
         sessionService.setSelection(result.selection);
@@ -117,7 +117,7 @@ export class ResultScene extends Phaser.Scene {
       this,
       640,
       638,
-      'CHANGE HERO',
+      '선수 다시 고르기',
       () => {
         audioService.play('tap');
         this.scene.start('CharacterSelectScene');
@@ -133,7 +133,7 @@ export class ResultScene extends Phaser.Scene {
       this,
       190,
       656,
-      'TITLE',
+      '처음으로',
       () => {
         audioService.play('tap');
         this.scene.start('TitleScene');
@@ -174,7 +174,6 @@ export class ResultScene extends Phaser.Scene {
 
   private refreshSoundButton(): void {
     const saveData = saveService.getSnapshot();
-    this.soundButton.setLabel(saveData.settings.soundOn ? 'SOUND ON' : 'SOUND OFF');
+    this.soundButton.setLabel(saveData.settings.soundOn ? '소리 켜짐' : '소리 꺼짐');
   }
 }
-

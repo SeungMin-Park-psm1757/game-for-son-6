@@ -22,9 +22,9 @@ export class TitleScene extends Phaser.Scene {
       void audioService.unlock();
     });
 
-    this.add.text(640, 128, 'GoalPop Arena', TEXT_STYLES.headline).setOrigin(0.5);
+    this.add.text(640, 128, '골팝 아레나', TEXT_STYLES.headline).setOrigin(0.5);
     this.add
-      .text(640, 192, 'Big heads. Tiny bodies. Ridiculous shots.', TEXT_STYLES.body)
+      .text(640, 192, '큰 머리, 작은 몸, 황당하게 시원한 슛!', TEXT_STYLES.body)
       .setOrigin(0.5);
     this.profileText = this.add.text(640, 250, '', TEXT_STYLES.body).setOrigin(0.5);
 
@@ -32,7 +32,7 @@ export class TitleScene extends Phaser.Scene {
       this,
       640,
       360,
-      'PLAY QUICK MATCH',
+      '바로 경기 시작',
       () => {
         void audioService.unlock();
         audioService.play('tap');
@@ -49,7 +49,7 @@ export class TitleScene extends Phaser.Scene {
       this,
       640,
       452,
-      'HOW TO PLAY',
+      '플레이 방법',
       () => {
         audioService.play('tap');
         this.tutorialOverlay.setVisible(true);
@@ -89,7 +89,7 @@ export class TitleScene extends Phaser.Scene {
       .text(
         640,
         626,
-        'Original mobile-first arcade soccer for one-player quick matches.',
+        '휴대폰에서도 가볍게 즐기는 1대1 아케이드 축구.',
         {
           ...TEXT_STYLES.body,
           fontSize: '18px',
@@ -108,9 +108,9 @@ export class TitleScene extends Phaser.Scene {
   private refreshProfile(): void {
     const saveData = saveService.getSnapshot();
     this.profileText.setText(
-      `Coins ${saveData.coins}   |   Roster ${saveData.unlockedCharacters.length}/4   |   Goals ${saveData.stats.goalsScored}`,
+      `코인 ${saveData.coins}   |   선수단 ${saveData.unlockedCharacters.length}/4   |   누적 골 ${saveData.stats.goalsScored}`,
     );
-    this.soundButton.setLabel(saveData.settings.soundOn ? 'SOUND ON' : 'SOUND OFF');
+    this.soundButton.setLabel(saveData.settings.soundOn ? '소리 켜짐' : '소리 꺼짐');
   }
 
   private createTutorialOverlay(): Phaser.GameObjects.Container {
@@ -121,18 +121,18 @@ export class TitleScene extends Phaser.Scene {
     panel.strokeRoundedRect(-270, -184, 540, 368, 30);
 
     const title = this.add
-      .text(0, -136, 'Quick Tutorial', TEXT_STYLES.title)
+      .text(0, -136, '빠른 설명', TEXT_STYLES.title)
       .setOrigin(0.5);
     const body = this.add.text(
       0,
       -22,
       [
-        'A / D  or touch left / right to move',
-        'W or JUMP to hop for aerials',
-        'SPACE or KICK to blast the ball',
-        'SHIFT or SPEC when the meter is full',
-        'Score more before time runs out',
-        'Tie games spill into overtime, then golden goal',
+        'A / D 또는 좌우 버튼으로 이동',
+        'W 또는 점프로 공중볼에 대응',
+        'SPACE 또는 슛으로 강하게 차기',
+        '게이지가 차면 SHIFT 또는 필살 발동',
+        '시간이 끝나기 전 더 많은 골 넣기',
+        '비기면 연장전, 그래도 비기면 골든골',
       ].join('\n'),
       {
         ...TEXT_STYLES.body,
@@ -147,7 +147,7 @@ export class TitleScene extends Phaser.Scene {
       this,
       0,
       118,
-      'LET ME AT IT',
+      '바로 해볼래',
       () => {
         audioService.play('tap');
         overlay.setVisible(false);

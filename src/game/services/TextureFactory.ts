@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { CHARACTERS } from '../config/characters';
 
 const CHARACTER_TEXTURE_PREFIX = 'character-';
+type PixelRect = [x: number, y: number, width?: number, height?: number];
 
 function drawRoundedRect(
   graphics: Phaser.GameObjects.Graphics,
@@ -14,6 +15,24 @@ function drawRoundedRect(
 ): void {
   graphics.fillStyle(color);
   graphics.fillRoundedRect(x, y, width, height, radius);
+}
+
+function fillPixelRects(
+  graphics: Phaser.GameObjects.Graphics,
+  color: number,
+  rects: PixelRect[],
+  pixelSize: number,
+): void {
+  graphics.fillStyle(color);
+
+  for (const [x, y, width = 1, height = 1] of rects) {
+    graphics.fillRect(
+      x * pixelSize,
+      y * pixelSize,
+      width * pixelSize,
+      height * pixelSize,
+    );
+  }
 }
 
 function generateCharacterTexture(
@@ -110,6 +129,93 @@ export function ensureTextures(scene: Phaser.Scene): void {
     graphics.fillStyle(0xffffff);
     graphics.fillCircle(4, 4, 4);
     graphics.generateTexture('spark', 8, 8);
+    graphics.destroy();
+  }
+
+  if (!scene.textures.exists('pixel-chip')) {
+    const graphics = scene.add.graphics();
+    graphics.setVisible(false);
+
+    fillPixelRects(
+      graphics,
+      0xffffff,
+      [
+        [1, 0, 2, 1],
+        [0, 1, 4, 2],
+        [1, 3, 2, 1],
+      ],
+      2,
+    );
+    fillPixelRects(graphics, 0x082030, [[0, 0, 1, 1], [3, 3, 1, 1]], 2);
+    graphics.generateTexture('pixel-chip', 8, 8);
+    graphics.destroy();
+  }
+
+  if (!scene.textures.exists('pixel-star')) {
+    const graphics = scene.add.graphics();
+    graphics.setVisible(false);
+
+    fillPixelRects(
+      graphics,
+      0xffffff,
+      [
+        [3, 0, 2, 1],
+        [2, 1, 4, 1],
+        [1, 2, 6, 1],
+        [0, 3, 8, 2],
+        [1, 5, 6, 1],
+        [2, 6, 4, 1],
+        [3, 7, 2, 1],
+      ],
+      2,
+    );
+    fillPixelRects(
+      graphics,
+      0xffcb63,
+      [
+        [3, 1, 2, 1],
+        [2, 2, 4, 1],
+        [2, 3, 4, 2],
+        [2, 5, 4, 1],
+        [3, 6, 2, 1],
+      ],
+      2,
+    );
+    graphics.generateTexture('pixel-star', 16, 16);
+    graphics.destroy();
+  }
+
+  if (!scene.textures.exists('pixel-bolt')) {
+    const graphics = scene.add.graphics();
+    graphics.setVisible(false);
+
+    fillPixelRects(
+      graphics,
+      0xffffff,
+      [
+        [3, 0, 3, 1],
+        [2, 1, 3, 1],
+        [3, 2, 2, 1],
+        [2, 3, 3, 1],
+        [4, 4, 2, 1],
+        [3, 5, 2, 1],
+        [2, 6, 2, 1],
+        [1, 7, 2, 1],
+      ],
+      2,
+    );
+    fillPixelRects(
+      graphics,
+      0x53c7ff,
+      [
+        [3, 1, 2, 1],
+        [3, 3, 2, 1],
+        [3, 4, 2, 1],
+        [2, 6, 1, 1],
+      ],
+      2,
+    );
+    graphics.generateTexture('pixel-bolt', 16, 16);
     graphics.destroy();
   }
 

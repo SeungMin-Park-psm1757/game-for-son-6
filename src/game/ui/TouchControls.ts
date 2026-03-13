@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { InputMappingSystem } from '../systems/InputMappingSystem';
+import { UI_FONT_STACK } from '../constants/ui';
 
 type TouchAction = 'left' | 'right' | 'jump' | 'kick' | 'special' | 'pause';
 
@@ -33,11 +34,11 @@ export class TouchControls {
       return;
     }
 
-    this.createButton(108, 610, 46, 'L', 'left', 0x082030);
-    this.createButton(226, 610, 46, 'R', 'right', 0x082030);
-    this.createButton(1_058, 610, 50, 'JUMP', 'jump', 0x53c7ff);
-    this.createButton(1_170, 618, 58, 'KICK', 'kick', 0xffcb63);
-    this.createButton(1_102, 516, 52, 'SPEC', 'special', 0xff6b57);
+    this.createButton(108, 610, 46, '좌', 'left', 0x082030);
+    this.createButton(226, 610, 46, '우', 'right', 0x082030);
+    this.createButton(1_058, 610, 50, '점프', 'jump', 0x53c7ff);
+    this.createButton(1_170, 618, 58, '슛', 'kick', 0xffcb63);
+    this.createButton(1_102, 516, 52, '필살', 'special', 0xff6b57);
     this.createButton(1_196, 142, 32, 'II', 'pause', 0x082030);
   }
 
@@ -71,7 +72,7 @@ export class TouchControls {
   ): void {
     const background = this.scene.add.circle(x, y, radius, color, 0.78);
     const label = this.scene.add.text(x, y, text, {
-      fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
+      fontFamily: UI_FONT_STACK,
       fontSize: action === 'kick' ? '24px' : '22px',
       fontStyle: 'bold',
       color: '#f8f4da',

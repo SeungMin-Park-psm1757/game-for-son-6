@@ -10,6 +10,9 @@ export class Ball extends Phaser.Physics.Arcade.Image {
   private stateExpiresAt = 0;
   private curveDirection = 0;
   private activeSpecialId: SpecialId | null = null;
+  private lastSpecialStrikeId: SpecialId | null = null;
+  private lastSpecialStrikePlayerId: string | null = null;
+  private lastSpecialStrikeExpiresAt = 0;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'soccer-ball');
@@ -25,6 +28,15 @@ export class Ball extends Phaser.Physics.Arcade.Image {
   }
 
   registerTouch(playerId: string): void {
+    if (
+      this.lastSpecialStrikePlayerId &&
+      playerId !== this.lastSpecialStrikePlayerId
+    ) {
+      this.lastSpecialStrikeId = null;
+      this.lastSpecialStrikePlayerId = null;
+      this.lastSpecialStrikeExpiresAt = 0;
+    }
+
     this.lastTouchPlayerId = playerId;
   }
 
@@ -48,6 +60,37 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     this.refreshTint();
   }
 
+  markSpecialStrike(
+    playerId: string,
+    specialId: SpecialId,
+    expiresAt: number,
+  ): void {
+    this.lastSpecialStrikePlayerId = playerId;
+    this.lastSpecialStrikeId = specialId;
+    this.lastSpecialStrikeExpiresAt = expiresAt;
+  }
+
+  getActiveSpecialId(): SpecialId | null {
+    return this.activeSpecialId;
+  }
+
+  getRecentSpecialStrike(
+    time: number,
+  ): { playerId: string; specialId: SpecialId } | null {
+    if (
+      !this.lastSpecialStrikeId ||
+      !this.lastSpecialStrikePlayerId ||
+      time > this.lastSpecialStrikeExpiresAt
+    ) {
+      return null;
+    }
+
+    return {
+      playerId: this.lastSpecialStrikePlayerId,
+      specialId: this.lastSpecialStrikeId,
+    };
+  }
+
   clearSpecialState(): void {
     this.ballState = 'normal';
     this.activeSpecialId = null;
@@ -61,6 +104,9 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     this.setPosition(x, y);
     this.setVelocity(0, MATCH_CONSTANTS.kickoffBallLift);
     this.clearSpecialState();
+    this.lastSpecialStrikeId = null;
+    this.lastSpecialStrikePlayerId = null;
+    this.lastSpecialStrikeExpiresAt = 0;
     this.lastTouchPlayerId = null;
   }
 

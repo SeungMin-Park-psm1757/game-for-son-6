@@ -50,7 +50,7 @@ export interface DifficultyProfile {
 export const DIFFICULTY_PROFILES: Record<DifficultyId, DifficultyProfile> = {
   easy: {
     id: 'easy',
-    label: 'Easy',
+    label: '쉬움',
     reactionMs: 280,
     targetError: 136,
     jumpChance: 0.44,
@@ -60,7 +60,7 @@ export const DIFFICULTY_PROFILES: Record<DifficultyId, DifficultyProfile> = {
   },
   normal: {
     id: 'normal',
-    label: 'Normal',
+    label: '보통',
     reactionMs: 190,
     targetError: 82,
     jumpChance: 0.68,
@@ -70,7 +70,7 @@ export const DIFFICULTY_PROFILES: Record<DifficultyId, DifficultyProfile> = {
   },
   hard: {
     id: 'hard',
-    label: 'Hard',
+    label: '어려움',
     reactionMs: 126,
     targetError: 40,
     jumpChance: 0.88,
@@ -79,4 +79,3 @@ export const DIFFICULTY_PROFILES: Record<DifficultyId, DifficultyProfile> = {
     defendBias: 0.48,
   },
 };
-

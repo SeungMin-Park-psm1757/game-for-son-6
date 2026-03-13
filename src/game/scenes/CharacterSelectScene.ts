@@ -40,13 +40,13 @@ export class CharacterSelectScene extends Phaser.Scene {
     });
 
     this.add
-      .text(640, 60, 'Pick Your Headliner', TEXT_STYLES.headline)
+      .text(640, 60, '선수를 골라줘', TEXT_STYLES.headline)
       .setOrigin(0.5);
     this.add
       .text(
         640,
         112,
-        'Choose a star, stadium, and CPU challenge.',
+        '선수와 경기장, 상대 난이도를 고르자.',
         TEXT_STYLES.body,
       )
       .setOrigin(0.5);
@@ -66,8 +66,8 @@ export class CharacterSelectScene extends Phaser.Scene {
       this.cards.push(card);
     });
 
-    this.add.text(262, 530, 'Difficulty', TEXT_STYLES.title).setOrigin(0.5);
-    this.add.text(1_022, 530, 'Stadium', TEXT_STYLES.title).setOrigin(0.5);
+    this.add.text(262, 530, '난이도', TEXT_STYLES.title).setOrigin(0.5);
+    this.add.text(1_022, 530, '경기장', TEXT_STYLES.title).setOrigin(0.5);
 
     (Object.keys(DIFFICULTY_PROFILES) as DifficultyId[]).forEach(
       (difficultyId, index) => {
@@ -97,7 +97,7 @@ export class CharacterSelectScene extends Phaser.Scene {
         this,
         928 + index * 190,
         592,
-        stadium.name.toUpperCase(),
+        stadium.name,
         () => this.handleStadiumPick(stadium.id),
         {
           width: 176,
@@ -113,7 +113,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       this,
       150,
       676,
-      'BACK',
+      '뒤로',
       () => {
         audioService.play('tap');
         this.scene.start('TitleScene');
@@ -129,7 +129,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       this,
       640,
       620,
-      'START MATCH',
+      '경기 시작',
       () => {
         void audioService.unlock();
         audioService.play('tap');
@@ -184,13 +184,13 @@ export class CharacterSelectScene extends Phaser.Scene {
     if (saveService.tryUnlockCharacter(characterId, character.unlockCost)) {
       audioService.play('special');
       this.selectedCharacterId = characterId;
-      this.noteText.setText(`${character.name} unlocked! ${character.intro}`);
+      this.noteText.setText(`${character.name} 해금 완료! ${character.intro}`);
       this.refresh();
       return;
     }
 
     this.noteText.setText(
-      `Need ${character.unlockCost} coins to unlock ${character.name}.`,
+      `${character.name} 해금에는 ${character.unlockCost}코인이 필요해.`,
     );
   }
 
@@ -205,13 +205,13 @@ export class CharacterSelectScene extends Phaser.Scene {
     if (saveData.unlockedStadiums.includes(stadiumId)) {
       audioService.play('tap');
       this.selectedStadiumId = stadiumId;
-      this.noteText.setText(`${stadium.name} is set for kickoff.`);
+      this.noteText.setText(`${stadium.name}에서 킥오프 준비 완료.`);
       this.refresh();
       return;
     }
 
     this.noteText.setText(
-      `${stadium.name} unlocks at ${stadium.unlockGoals} total goals scored.`,
+      `${stadium.name}은 누적 ${stadium.unlockGoals}골을 넣으면 열린다.`,
     );
   }
 
@@ -243,9 +243,9 @@ export class CharacterSelectScene extends Phaser.Scene {
   private refresh(): void {
     const saveData = saveService.getSnapshot();
 
-    this.coinsText.setText(`Coins ${saveData.coins}`);
+    this.coinsText.setText(`코인 ${saveData.coins}`);
     this.soundButton.setLabel(
-      saveData.settings.soundOn ? 'SOUND ON' : 'SOUND OFF',
+      saveData.settings.soundOn ? '소리 켜짐' : '소리 꺼짐',
     );
 
     this.cards.forEach((card) => {
@@ -270,8 +270,8 @@ export class CharacterSelectScene extends Phaser.Scene {
       button.setEnabled(unlocked);
       button.setLabel(
         unlocked
-          ? stadium?.name.toUpperCase() ?? stadiumId.toUpperCase()
-          : `${stadium?.name.toUpperCase()} (${stadium?.unlockGoals} GOALS)`,
+          ? stadium?.name ?? stadiumId
+          : `${stadium?.name ?? stadiumId} (${stadium?.unlockGoals}골)`,
       );
     });
   }

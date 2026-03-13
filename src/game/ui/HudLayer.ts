@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { getSpecialById } from '../config/specials';
 import { TEXT_STYLES } from '../constants/ui';
 import type { SpecialId } from '../types/CharacterConfig';
 
@@ -57,8 +58,8 @@ export class HudLayer {
     this.playerMeterFill.setScrollFactor(0);
     this.cpuMeterFill.setScrollFactor(0);
 
-    this.playerMeterLabel = scene.add.text(210, 66, 'SPECIAL', TEXT_STYLES.body);
-    this.cpuMeterLabel = scene.add.text(1_070, 66, 'SPECIAL', TEXT_STYLES.body);
+    this.playerMeterLabel = scene.add.text(210, 66, '필살기', TEXT_STYLES.body);
+    this.cpuMeterLabel = scene.add.text(1_070, 66, '상대 필살기', TEXT_STYLES.body);
     this.playerMeterLabel.setOrigin(0.5);
     this.cpuMeterLabel.setOrigin(0.5);
     this.playerMeterLabel.setScrollFactor(0);
@@ -107,7 +108,7 @@ export class HudLayer {
 
   updateClock(remainingMs: number, overtime: boolean, suddenDeath: boolean): void {
     this.timerText.setText(
-      suddenDeath ? 'GOLDEN GOAL' : overtime ? `OT ${formatClock(remainingMs)}` : formatClock(remainingMs),
+      suddenDeath ? '골든골' : overtime ? `연장 ${formatClock(remainingMs)}` : formatClock(remainingMs),
     );
   }
 
@@ -119,8 +120,16 @@ export class HudLayer {
   ): void {
     this.playerMeterFill.width = 180 * Phaser.Math.Clamp(playerMeter / 100, 0, 1);
     this.cpuMeterFill.width = 180 * Phaser.Math.Clamp(cpuMeter / 100, 0, 1);
-    this.playerMeterLabel.setText(playerMeter >= 100 ? `${playerSpecial.toUpperCase()} READY` : 'SPECIAL');
-    this.cpuMeterLabel.setText(cpuMeter >= 100 ? `${cpuSpecial.toUpperCase()} READY` : 'CPU SPECIAL');
+    this.playerMeterLabel.setText(
+      playerMeter >= 100
+        ? `${getSpecialById(playerSpecial).shortLabel} 준비`
+        : '필살기',
+    );
+    this.cpuMeterLabel.setText(
+      cpuMeter >= 100
+        ? `${getSpecialById(cpuSpecial).shortLabel} 준비`
+        : '상대 필살기',
+    );
   }
 
   showBanner(
@@ -154,4 +163,3 @@ export class HudLayer {
     });
   }
 }
-

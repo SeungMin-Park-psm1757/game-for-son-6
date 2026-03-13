@@ -49,6 +49,7 @@ export class SpecialSystem {
   applyKickEffect(player: Player, consumedQueuedSpecial: string | null, time: number): void {
     if (consumedQueuedSpecial === 'fire-shot') {
       this.ball.setSpecialState('fire', 'fire-shot', player.facing, time + 1_300);
+      this.ball.markSpecialStrike(player.playerId, 'fire-shot', time + 1_600);
       return;
     }
 
@@ -59,6 +60,7 @@ export class SpecialSystem {
         player.facing,
         time + 1_900,
       );
+      this.ball.markSpecialStrike(player.playerId, 'curve-touch', time + 2_100);
     }
   }
 
@@ -70,6 +72,7 @@ export class SpecialSystem {
     ) {
       this.ball.applyImpulse(player.facing * 640, -180);
       this.ball.registerTouch(player.playerId);
+      this.ball.markSpecialStrike(player.playerId, 'dash-kick', time + 1_200);
       player.markDashHitConsumed();
     }
 
@@ -112,10 +115,12 @@ export class SpecialSystem {
 
     if (state === 'fire-shot') {
       this.ball.setSpecialState('fire', state, player.facing, expiresAt);
+      this.ball.markSpecialStrike(player.playerId, state, expiresAt + 240);
       return;
     }
 
     this.ball.setSpecialState('curve', state, player.facing, expiresAt);
+    this.ball.markSpecialStrike(player.playerId, state, expiresAt + 260);
   }
 
   private spawnWall(player: Player, expiresAt: number): void {

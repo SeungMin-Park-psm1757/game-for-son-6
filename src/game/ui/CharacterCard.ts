@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
+import { getSpecialById } from '../config/specials';
 import type { CharacterConfig } from '../types/CharacterConfig';
 import { getCharacterTextureKey } from '../services/TextureFactory';
+import { UI_FONT_STACK } from '../constants/ui';
 
 interface CharacterCardState {
   selected: boolean;
@@ -29,22 +31,22 @@ export class CharacterCard extends Phaser.GameObjects.Container {
       .image(0, -52, getCharacterTextureKey(character.id))
       .setScale(0.72);
     this.nameText = scene.add.text(0, 34, character.name, {
-      fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
-      fontSize: '26px',
+      fontFamily: UI_FONT_STACK,
+      fontSize: '24px',
       fontStyle: 'bold',
       color: '#f8f4da',
       stroke: '#082030',
       strokeThickness: 6,
     });
     this.subtitleText = scene.add.text(0, 68, character.title, {
-      fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
-      fontSize: '16px',
+      fontFamily: UI_FONT_STACK,
+      fontSize: '15px',
       color: '#ffffff',
       align: 'center',
       wordWrap: { width: 220 },
     });
     this.footerText = scene.add.text(0, 118, '', {
-      fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
+      fontFamily: UI_FONT_STACK,
       fontSize: '18px',
       fontStyle: 'bold',
       color: '#082030',
@@ -87,11 +89,11 @@ export class CharacterCard extends Phaser.GameObjects.Container {
     this.footerText.setText(
       state.unlocked
         ? state.selected
-          ? 'SELECTED'
-          : this.character.specialId.toUpperCase()
+          ? '선택 완료'
+          : getSpecialById(this.character.specialId).shortLabel
         : state.canAfford
-          ? `UNLOCK ${this.character.unlockCost} COINS`
-          : `LOCKED ${this.character.unlockCost}`,
+          ? `${this.character.unlockCost}코인 해금`
+          : `${this.character.unlockCost}코인 필요`,
     );
   }
 }

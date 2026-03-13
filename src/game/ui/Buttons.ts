@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { UI_COLORS } from '../constants/ui';
+import { UI_COLORS, UI_FONT_STACK } from '../constants/ui';
 
 interface TextButtonOptions {
   width?: number;
@@ -37,7 +37,7 @@ export class TextButton extends Phaser.GameObjects.Container {
 
     this.background = scene.add.graphics();
     this.labelText = scene.add.text(0, 0, label, {
-      fontFamily: 'Trebuchet MS, Segoe UI, sans-serif',
+      fontFamily: UI_FONT_STACK,
       fontSize: '28px',
       fontStyle: 'bold',
       color: this.options.textColor,

@@ -3,7 +3,7 @@ import type { StadiumConfig } from '../types/StadiumConfig';
 export const STADIUMS: StadiumConfig[] = [
   {
     id: 'sunset-arena',
-    name: 'Sunset Arena',
+    name: '노을 경기장',
     skyTop: 0xffb15e,
     skyBottom: 0xff6b57,
     crowd: 0x5c2945,
@@ -15,7 +15,7 @@ export const STADIUMS: StadiumConfig[] = [
   },
   {
     id: 'neon-night',
-    name: 'Neon Night',
+    name: '네온 나이트',
     skyTop: 0x12052b,
     skyBottom: 0x14577e,
     crowd: 0x2b3359,
@@ -38,4 +38,3 @@ export function getStadiumById(id: string): StadiumConfig {
 
   return stadium;
 }
-

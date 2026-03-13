@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { getCharacterById } from '../config/characters';
+import { getSpecialById } from '../config/specials';
 import { getStadiumById } from '../config/stadiums';
 import {
   FIELD_BOUNDS,
@@ -22,6 +23,7 @@ import { InputMappingSystem } from '../systems/InputMappingSystem';
 import { MatchStateMachine } from '../systems/MatchStateMachine';
 import { SpecialSystem } from '../systems/SpecialSystem';
 import type { MatchPhase, MatchResult, MatchSelection, MatchWinner } from '../types/MatchTypes';
+import type { SpecialId } from '../types/CharacterConfig';
 import { TextButton } from '../ui/Buttons';
 import { HudLayer } from '../ui/HudLayer';
 import { drawStadiumBackdrop } from '../ui/StadiumBackdrop';
@@ -155,7 +157,7 @@ export class MatchScene extends Phaser.Scene {
       this,
       1_158,
       142,
-      'PAUSE',
+      '일시정지',
       () => {
         audioService.play('tap');
         this.togglePause();
@@ -171,7 +173,7 @@ export class MatchScene extends Phaser.Scene {
     this.refreshAudioButton();
     this.prepareKickoffPositions();
     this.stateMachine.setPhase('intro', this.time.now);
-    this.hud.showBanner(this, 'KICKOFF CLASH', '45 seconds to make a scene.', 0xffcb63);
+    this.hud.showBanner(this, '킥오프 난투', '45초 안에 더 많이 넣어보자.', 0xffcb63);
 
     this.events.once('shutdown', () => {
       this.specialSystem.clear();
@@ -285,21 +287,25 @@ export class MatchScene extends Phaser.Scene {
     }
 
     if (playerActions.special && this.specialSystem.activate(this.player, time)) {
+      const special = getSpecialById(this.player.character.specialId);
+
       audioService.play('special');
       this.hud.showBanner(
         this,
-        this.player.character.name.toUpperCase(),
-        this.player.character.specialId.replace('-', ' ').toUpperCase(),
-        this.player.character.visuals.primary,
+        this.player.character.name,
+        `${special.name} 발동!`,
+        special.color,
       );
     }
 
     if (cpuActions.special && this.specialSystem.activate(this.cpu, time)) {
+      const special = getSpecialById(this.cpu.character.specialId);
+
       this.hud.showBanner(
         this,
-        this.cpu.character.name.toUpperCase(),
-        this.cpu.character.specialId.replace('-', ' ').toUpperCase(),
-        this.cpu.character.visuals.primary,
+        this.cpu.character.name,
+        `${special.name} 발동!`,
+        special.color,
       );
     }
 
@@ -341,12 +347,12 @@ export class MatchScene extends Phaser.Scene {
     this.goalLocked = true;
     this.hud.showBanner(
       this,
-      this.suddenDeath ? 'GOLDEN GOAL' : this.wentOvertime ? 'OVERTIME' : 'READY',
+      this.suddenDeath ? '골든골' : this.wentOvertime ? '연장전' : '준비',
       this.suddenDeath
-        ? 'Next goal wins everything.'
+        ? '다음 골이 바로 결승골이다.'
         : this.wentOvertime
-          ? '15 seconds. No easy touches now.'
-          : 'Ball drops in 1 second.',
+          ? '15초 연장전, 집중해서 마무리하자.'
+          : '1초 뒤 공이 떨어진다.',
       this.suddenDeath ? 0xff6b57 : this.wentOvertime ? 0x87e6ff : 0xffcb63,
     );
   }
@@ -379,20 +385,40 @@ export class MatchScene extends Phaser.Scene {
       scorer === 'player'
         ? this.player.character.visuals.primary
         : this.cpu.character.visuals.primary;
+    const scorerPlayer = scorer === 'player' ? this.player : this.cpu;
+    const specialStrike = this.ball.getRecentSpecialStrike(this.time.now);
+    const specialGoalId =
+      specialStrike?.playerId === scorerPlayer.playerId
+        ? specialStrike.specialId
+        : null;
 
     this.physics.world.pause();
     this.cameras.main.shake(160, 0.008);
     this.spawnBurst(scorer === 'player' ? 1_204 : 76, 520, accent, 16);
     audioService.play('goal');
     this.hud.updateScore(this.playerScore, this.cpuScore);
-    this.hud.showBanner(
-      this,
-      'GOAL!',
-      scorer === 'player'
-        ? `${this.player.character.name} makes the net rattle.`
-        : `${this.cpu.character.name} sneaks one in.`,
-      accent,
-    );
+
+    if (specialGoalId) {
+      const special = getSpecialById(specialGoalId);
+
+      this.playSpecialGoalEffect(scorer, specialGoalId, special.color);
+      this.hud.showBanner(
+        this,
+        '스페셜 골!',
+        `${scorerPlayer.character.name}의 ${special.name}!`,
+        special.color,
+      );
+    } else {
+      this.hud.showBanner(
+        this,
+        '골!',
+        scorer === 'player'
+          ? `${this.player.character.name}의 슛이 골망을 흔들었다.`
+          : `${this.cpu.character.name}가 한 골을 밀어 넣었다.`,
+        accent,
+      );
+    }
+
     this.stateMachine.setPhase('goalFreeze', this.time.now);
 
     if (this.suddenDeath) {
@@ -415,7 +441,7 @@ export class MatchScene extends Phaser.Scene {
       if (this.matchRemainingMs === 0) {
         if (this.playerScore === this.cpuScore) {
           this.wentOvertime = true;
-          this.hud.showBanner(this, 'OVERTIME', '15 more seconds. Settle it.', 0x87e6ff);
+          this.hud.showBanner(this, '연장전', '15초 더, 여기서 끝내자.', 0x87e6ff);
           audioService.play('whistle');
         } else {
           this.finishMatch();
@@ -434,7 +460,7 @@ export class MatchScene extends Phaser.Scene {
     if (this.overtimeRemainingMs === 0) {
       if (this.playerScore === this.cpuScore) {
         this.suddenDeath = true;
-        this.hud.showBanner(this, 'GOLDEN GOAL', 'Next finish ends it.', 0xff6b57);
+        this.hud.showBanner(this, '골든골', '다음 골이 경기 끝이다.', 0xff6b57);
         audioService.play('whistle');
       } else {
         this.finishMatch();
@@ -482,8 +508,8 @@ export class MatchScene extends Phaser.Scene {
     this.ball.setVelocity(0, 0);
     this.hud.showBanner(
       this,
-      winner === 'player' ? 'YOU WIN' : winner === 'cpu' ? 'CPU WINS' : 'DRAW',
-      `Coins +${result.coinsEarned + result.bonusCoins}`,
+      winner === 'player' ? '승리!' : winner === 'cpu' ? '패배' : '무승부',
+      `코인 +${result.coinsEarned + result.bonusCoins}`,
       winner === 'player' ? 0x7df3c1 : winner === 'cpu' ? 0xff6b57 : 0x87e6ff,
     );
 
@@ -516,7 +542,7 @@ export class MatchScene extends Phaser.Scene {
 
   private refreshAudioButton(): void {
     const saveData = saveService.getSnapshot();
-    this.audioButton.setLabel(saveData.settings.soundOn ? 'SOUND ON' : 'SOUND OFF');
+    this.audioButton.setLabel(saveData.settings.soundOn ? '소리 켜짐' : '소리 꺼짐');
   }
 
   private createPauseOverlay(): Phaser.GameObjects.Container {
@@ -528,16 +554,16 @@ export class MatchScene extends Phaser.Scene {
     panel.lineStyle(5, 0xffcb63, 1);
     panel.strokeRoundedRect(430, 186, 420, 340, 32);
 
-    const title = this.add.text(640, 250, 'Paused', TEXT_STYLES.headline).setOrigin(0.5);
+    const title = this.add.text(640, 250, '일시정지', TEXT_STYLES.headline).setOrigin(0.5);
     const subtitle = this.add
-      .text(640, 314, 'Take a breath, then get back to the chaos.', TEXT_STYLES.body)
+      .text(640, 314, '잠깐 숨 고르고 다시 들어가자.', TEXT_STYLES.body)
       .setOrigin(0.5);
 
     const resumeButton = new TextButton(
       this,
       640,
       404,
-      'RESUME',
+      '계속하기',
       () => {
         audioService.play('tap');
         this.togglePause();
@@ -553,7 +579,7 @@ export class MatchScene extends Phaser.Scene {
       this,
       640,
       482,
-      'BACK TO TITLE',
+      '처음 화면',
       () => {
         audioService.play('tap');
         this.physics.world.resume();
@@ -576,6 +602,126 @@ export class MatchScene extends Phaser.Scene {
     overlay.setDepth(60);
     overlay.setVisible(false);
     return overlay;
+  }
+
+  private playSpecialGoalEffect(
+    scorer: 'player' | 'cpu',
+    specialId: SpecialId,
+    accent: number,
+  ): void {
+    const special = getSpecialById(specialId);
+    const scorerName =
+      scorer === 'player' ? this.player.character.name : this.cpu.character.name;
+    const goalX = scorer === 'player' ? 1_204 : 76;
+    const flashColor = Phaser.Display.Color.IntegerToColor(accent);
+    const overlay = this.add.container(0, 0);
+    const panel = this.add.graphics();
+    const veil = this.add.rectangle(640, 360, GAME_WIDTH, GAME_HEIGHT, accent, 0.14);
+    const title = this.add.text(640, 274, '스페셜 골!', {
+      ...TEXT_STYLES.headline,
+      fontSize: '48px',
+    });
+    const subtitle = this.add.text(640, 336, `${scorerName}의 ${special.name}`, {
+      ...TEXT_STYLES.title,
+      fontSize: '28px',
+    });
+    const detail = this.add.text(640, 382, '픽셀 불꽃이 골문을 터뜨렸다!', {
+      ...TEXT_STYLES.body,
+      fontSize: '18px',
+    });
+
+    this.drawPixelPanel(panel, 308, 214, 664, 194, accent);
+    title.setOrigin(0.5);
+    subtitle.setOrigin(0.5);
+    detail.setOrigin(0.5);
+    overlay.add([veil, panel, title, subtitle, detail]);
+    overlay.setDepth(58);
+
+    this.cameras.main.flash(
+      180,
+      flashColor.red,
+      flashColor.green,
+      flashColor.blue,
+      true,
+    );
+
+    const textureKeys = ['pixel-star', 'pixel-chip', 'pixel-bolt'] as const;
+    for (let index = 0; index < 26; index += 1) {
+      const texture = textureKeys[index % textureKeys.length];
+      const burst = this.add.image(goalX, 514, texture);
+      const tint = [accent, 0xffcb63, 0xffffff][index % 3];
+      const angle = Phaser.Math.FloatBetween(-1.2, 1.2);
+      const distance = Phaser.Math.Between(120, 360);
+      const yLift = Phaser.Math.Between(-220, -40);
+
+      burst.setTint(tint);
+      burst.setDepth(59);
+      burst.setScale(Phaser.Math.FloatBetween(1.6, 3.1));
+      overlay.add(burst);
+
+      this.tweens.add({
+        targets: burst,
+        x: goalX + Math.cos(angle) * distance,
+        y: 514 + yLift + Math.sin(angle) * 24,
+        alpha: 0,
+        angle: Phaser.Math.Between(-70, 70),
+        scale: burst.scale * 0.6,
+        duration: Phaser.Math.Between(520, 760),
+        ease: 'Cubic.Out',
+        onComplete: () => burst.destroy(),
+      });
+    }
+
+    this.tweens.add({
+      targets: [title, subtitle, detail],
+      y: '-=8',
+      duration: 210,
+      ease: 'Sine.Out',
+      yoyo: true,
+    });
+
+    this.tweens.add({
+      targets: overlay,
+      alpha: 0,
+      delay: 860,
+      duration: 220,
+      ease: 'Quad.In',
+      onComplete: () => overlay.destroy(),
+    });
+  }
+
+  private drawPixelPanel(
+    graphics: Phaser.GameObjects.Graphics,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    accent: number,
+  ): void {
+    const block = 12;
+
+    graphics.fillStyle(0x082030, 0.94);
+    graphics.fillRect(x, y, width, height);
+    graphics.fillStyle(0xffffff, 0.07);
+    graphics.fillRect(x + 18, y + 18, width - 36, 44);
+    graphics.fillStyle(accent, 0.95);
+    graphics.fillRect(x + 18, y + height - 34, width - 36, 12);
+
+    for (let px = 0; px < width; px += block) {
+      graphics.fillStyle(accent, 0.98);
+      graphics.fillRect(x + px, y, block, block);
+      graphics.fillRect(x + px, y + height - block, block, block);
+    }
+
+    for (let py = 0; py < height; py += block) {
+      graphics.fillStyle(accent, 0.98);
+      graphics.fillRect(x, y + py, block, block);
+      graphics.fillRect(x + width - block, y + py, block, block);
+    }
+
+    graphics.fillStyle(0xffcb63, 0.96);
+    graphics.fillRect(x + 24, y + 24, 72, 12);
+    graphics.fillRect(x + width - 96, y + 24, 72, 12);
   }
 
   private spawnBurst(
