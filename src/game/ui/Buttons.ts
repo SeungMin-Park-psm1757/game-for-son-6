@@ -48,8 +48,8 @@ export class TextButton extends Phaser.GameObjects.Container {
     this.add([this.background, this.labelText]);
     this.setSize(this.options.width, this.options.height);
     this.hitArea = new Phaser.Geom.Rectangle(
-      0,
-      0,
+      -this.options.width / 2,
+      -this.options.height / 2,
       this.options.width,
       this.options.height,
     );
@@ -66,6 +66,7 @@ export class TextButton extends Phaser.GameObjects.Container {
 
     this.on('pointerup', () => this.setScale(1));
     this.on('pointerout', () => this.setScale(1));
+    this.on('pointerupoutside', () => this.setScale(1));
 
     scene.add.existing(this);
     this.redraw();
@@ -93,9 +94,8 @@ export class TextButton extends Phaser.GameObjects.Container {
   private redraw(): void {
     const width = this.options.width;
     const height = this.options.height;
-    const backgroundColor = this.selected
-      ? 0x87e6ff
-      : this.options.fillColor;
+    const backgroundColor = this.selected ? 0xff6b57 : this.options.fillColor;
+    const borderColor = this.selected ? 0xffcb63 : this.options.accentColor;
 
     this.background.clear();
     this.background.fillStyle(0x082030, this.enabled ? 1 : 0.65);
@@ -108,7 +108,7 @@ export class TextButton extends Phaser.GameObjects.Container {
     );
     this.background.fillStyle(backgroundColor);
     this.background.fillRoundedRect(-width / 2, -height / 2, width, height, 22);
-    this.background.lineStyle(5, this.options.accentColor, 1);
+    this.background.lineStyle(5, borderColor, 1);
     this.background.strokeRoundedRect(-width / 2, -height / 2, width, height, 22);
   }
 }

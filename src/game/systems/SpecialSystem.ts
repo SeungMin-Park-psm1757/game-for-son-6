@@ -3,6 +3,7 @@ import { getSpecialById } from '../config/specials';
 import { MATCH_CONSTANTS } from '../constants/balance';
 import { Ball } from '../entities/Ball';
 import { Player } from '../entities/Player';
+import { audioService } from '../services/AudioService';
 
 interface WallRecord {
   expiresAt: number;
@@ -74,6 +75,7 @@ export class SpecialSystem {
       this.ball.registerTouch(player.playerId);
       this.ball.markSpecialStrike(player.playerId, 'dash-kick', time + 1_200);
       player.markDashHitConsumed();
+      audioService.play('dash');
     }
 
     for (const [playerId, wall] of this.walls) {
@@ -150,7 +152,10 @@ export class SpecialSystem {
       const body = this.ball.body as Phaser.Physics.Arcade.Body;
       body.velocity.x *= -0.95;
       body.velocity.y -= 55;
+      audioService.play('wall');
     });
+
+    audioService.play('wall');
 
     this.walls.set(player.playerId, {
       expiresAt,

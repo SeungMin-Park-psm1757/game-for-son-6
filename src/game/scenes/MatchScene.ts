@@ -22,7 +22,12 @@ import { CpuAiSystem } from '../systems/CpuAiSystem';
 import { InputMappingSystem } from '../systems/InputMappingSystem';
 import { MatchStateMachine } from '../systems/MatchStateMachine';
 import { SpecialSystem } from '../systems/SpecialSystem';
-import type { MatchPhase, MatchResult, MatchSelection, MatchWinner } from '../types/MatchTypes';
+import type {
+  MatchPhase,
+  MatchResult,
+  MatchSelection,
+  MatchWinner,
+} from '../types/MatchTypes';
 import type { SpecialId } from '../types/CharacterConfig';
 import { TextButton } from '../ui/Buttons';
 import { HudLayer } from '../ui/HudLayer';
@@ -53,6 +58,8 @@ export class MatchScene extends Phaser.Scene {
   private pauseResumePhase: MatchPhase = 'live';
   private pauseOverlay!: Phaser.GameObjects.Container;
   private audioButton!: TextButton;
+  private lastImpactSoundAt = 0;
+  private lastBallTrailAt = 0;
 
   constructor() {
     super('MatchScene');
@@ -111,7 +118,11 @@ export class MatchScene extends Phaser.Scene {
     this.physics.add.collider(this.cpu, structures);
     this.physics.add.collider(this.player, this.cpu);
     this.physics.add.collider(this.ball, structures, () => {
-      this.spawnBurst(this.ball.x, this.ball.y, 0xffffff, 4);
+      this.spawnBurst(this.ball.x, this.ball.y, 0xffffff, 6);
+      if (this.time.now - this.lastImpactSoundAt > 80) {
+        this.lastImpactSoundAt = this.time.now;
+        audioService.play('impact');
+      }
     });
     this.physics.add.collider(this.ball, this.player, () => {
       this.ball.registerTouch(this.player.playerId);
@@ -158,10 +169,7 @@ export class MatchScene extends Phaser.Scene {
       1_158,
       142,
       '일시정지',
-      () => {
-        audioService.play('tap');
-        this.togglePause();
-      },
+      () => this.togglePause(),
       {
         width: 164,
         height: 50,
@@ -173,7 +181,7 @@ export class MatchScene extends Phaser.Scene {
     this.refreshAudioButton();
     this.prepareKickoffPositions();
     this.stateMachine.setPhase('intro', this.time.now);
-    this.hud.showBanner(this, '킥오프 난투', '45초 안에 더 많이 넣어보자.', 0xffcb63);
+    this.hud.showBanner(this, '킥오프 준비', '45초 안에 더 많은 골을 넣자.', 0xffcb63);
 
     this.events.once('shutdown', () => {
       this.specialSystem.clear();
@@ -225,6 +233,7 @@ export class MatchScene extends Phaser.Scene {
     }
 
     this.ball.tick(time, delta);
+    this.spawnBallTrail(time);
     this.specialSystem.update(this.player, time);
     this.specialSystem.update(this.cpu, time);
     this.touchControls.setSpecialReady(this.player.canSpecial(time));
@@ -267,13 +276,13 @@ export class MatchScene extends Phaser.Scene {
       const kick = this.player.tryKick(this.ball, time);
 
       if (kick.kicked) {
-        audioService.play(kick.powerShot ? 'special' : 'kick');
+        audioService.play(kick.powerShot ? 'power-kick' : 'kick');
         this.specialSystem.applyKickEffect(this.player, kick.consumedQueuedSpecial, time);
         this.spawnBurst(
           this.ball.x,
           this.ball.y,
           this.player.character.visuals.secondary,
-          5,
+          kick.powerShot ? 9 : 5,
         );
       }
     }
@@ -282,6 +291,7 @@ export class MatchScene extends Phaser.Scene {
       const kick = this.cpu.tryKick(this.ball, time);
 
       if (kick.kicked) {
+        audioService.play(kick.powerShot ? 'power-kick' : 'kick');
         this.specialSystem.applyKickEffect(this.cpu, kick.consumedQueuedSpecial, time);
       }
     }
@@ -289,7 +299,7 @@ export class MatchScene extends Phaser.Scene {
     if (playerActions.special && this.specialSystem.activate(this.player, time)) {
       const special = getSpecialById(this.player.character.specialId);
 
-      audioService.play('special');
+      this.playSpecialActivationSound(this.player.character.specialId);
       this.hud.showBanner(
         this,
         this.player.character.name,
@@ -301,6 +311,7 @@ export class MatchScene extends Phaser.Scene {
     if (cpuActions.special && this.specialSystem.activate(this.cpu, time)) {
       const special = getSpecialById(this.cpu.character.specialId);
 
+      this.playSpecialActivationSound(this.cpu.character.specialId);
       this.hud.showBanner(
         this,
         this.cpu.character.name,
@@ -351,8 +362,8 @@ export class MatchScene extends Phaser.Scene {
       this.suddenDeath
         ? '다음 골이 바로 결승골이다.'
         : this.wentOvertime
-          ? '15초 연장전, 집중해서 마무리하자.'
-          : '1초 뒤 공이 떨어진다.',
+          ? '15초 연장전. 한 번 더 몰아붙이자.'
+          : '1초 뒤에 공이 떨어진다.',
       this.suddenDeath ? 0xff6b57 : this.wentOvertime ? 0x87e6ff : 0xffcb63,
     );
   }
@@ -391,11 +402,14 @@ export class MatchScene extends Phaser.Scene {
       specialStrike?.playerId === scorerPlayer.playerId
         ? specialStrike.specialId
         : null;
+    const goalX = scorer === 'player' ? 1_204 : 76;
 
     this.physics.world.pause();
-    this.cameras.main.shake(160, 0.008);
-    this.spawnBurst(scorer === 'player' ? 1_204 : 76, 520, accent, 16);
+    this.cameras.main.shake(180, 0.009);
+    this.playGoalExplosion(goalX, accent);
+    this.playGoalCelebration(scorerPlayer, accent);
     audioService.play('goal');
+    audioService.play('celebrate');
     this.hud.updateScore(this.playerScore, this.cpuScore);
 
     if (specialGoalId) {
@@ -404,17 +418,17 @@ export class MatchScene extends Phaser.Scene {
       this.playSpecialGoalEffect(scorer, specialGoalId, special.color);
       this.hud.showBanner(
         this,
-        '스페셜 골!',
+        '스페셜 골',
         `${scorerPlayer.character.name}의 ${special.name}!`,
         special.color,
       );
     } else {
       this.hud.showBanner(
         this,
-        '골!',
+        '골',
         scorer === 'player'
-          ? `${this.player.character.name}의 슛이 골망을 흔들었다.`
-          : `${this.cpu.character.name}가 한 골을 밀어 넣었다.`,
+          ? `${this.player.character.name}의 슛이 골문을 흔들었다.`
+          : `${this.cpu.character.name}가 역습으로 마무리했다.`,
         accent,
       );
     }
@@ -441,7 +455,7 @@ export class MatchScene extends Phaser.Scene {
       if (this.matchRemainingMs === 0) {
         if (this.playerScore === this.cpuScore) {
           this.wentOvertime = true;
-          this.hud.showBanner(this, '연장전', '15초 더, 여기서 끝내자.', 0x87e6ff);
+          this.hud.showBanner(this, '연장전', '15초 추가 시간으로 승부를 가른다.', 0x87e6ff);
           audioService.play('whistle');
         } else {
           this.finishMatch();
@@ -460,7 +474,7 @@ export class MatchScene extends Phaser.Scene {
     if (this.overtimeRemainingMs === 0) {
       if (this.playerScore === this.cpuScore) {
         this.suddenDeath = true;
-        this.hud.showBanner(this, '골든골', '다음 골이 경기 끝이다.', 0xff6b57);
+        this.hud.showBanner(this, '골든골', '다음 골이 경기의 끝이다.', 0xff6b57);
         audioService.play('whistle');
       } else {
         this.finishMatch();
@@ -527,6 +541,7 @@ export class MatchScene extends Phaser.Scene {
       this.pauseOverlay.setVisible(false);
       this.physics.world.resume();
       this.stateMachine.setPhase(this.pauseResumePhase, this.time.now);
+      audioService.play('resume');
       return;
     }
 
@@ -538,6 +553,7 @@ export class MatchScene extends Phaser.Scene {
     this.stateMachine.setPhase('paused', this.time.now);
     this.physics.world.pause();
     this.pauseOverlay.setVisible(true);
+    audioService.play('pause');
   }
 
   private refreshAudioButton(): void {
@@ -556,7 +572,7 @@ export class MatchScene extends Phaser.Scene {
 
     const title = this.add.text(640, 250, '일시정지', TEXT_STYLES.headline).setOrigin(0.5);
     const subtitle = this.add
-      .text(640, 314, '잠깐 숨 고르고 다시 들어가자.', TEXT_STYLES.body)
+      .text(640, 314, '호흡을 고르고 다시 들어가자.', TEXT_STYLES.body)
       .setOrigin(0.5);
 
     const resumeButton = new TextButton(
@@ -564,10 +580,7 @@ export class MatchScene extends Phaser.Scene {
       640,
       404,
       '계속하기',
-      () => {
-        audioService.play('tap');
-        this.togglePause();
-      },
+      () => this.togglePause(),
       {
         width: 220,
         height: 66,
@@ -616,8 +629,8 @@ export class MatchScene extends Phaser.Scene {
     const flashColor = Phaser.Display.Color.IntegerToColor(accent);
     const overlay = this.add.container(0, 0);
     const panel = this.add.graphics();
-    const veil = this.add.rectangle(640, 360, GAME_WIDTH, GAME_HEIGHT, accent, 0.14);
-    const title = this.add.text(640, 274, '스페셜 골!', {
+    const veil = this.add.rectangle(640, 360, GAME_WIDTH, GAME_HEIGHT, accent, 0.12);
+    const title = this.add.text(640, 272, '스페셜 골', {
       ...TEXT_STYLES.headline,
       fontSize: '48px',
     });
@@ -625,12 +638,12 @@ export class MatchScene extends Phaser.Scene {
       ...TEXT_STYLES.title,
       fontSize: '28px',
     });
-    const detail = this.add.text(640, 382, '부드러운 붓결이 골문을 갈랐다!', {
+    const detail = this.add.text(640, 384, '강한 연출과 함께 골문이 터져 나간다.', {
       ...TEXT_STYLES.body,
       fontSize: '18px',
     });
 
-    this.drawPixelPanel(panel, 308, 214, 664, 194, accent);
+    this.drawShowPanel(panel, 308, 214, 664, 194, accent);
     title.setOrigin(0.5);
     subtitle.setOrigin(0.5);
     detail.setOrigin(0.5);
@@ -645,28 +658,29 @@ export class MatchScene extends Phaser.Scene {
       true,
     );
 
-    const textureKeys = ['pixel-star', 'pixel-chip', 'pixel-bolt'] as const;
-    for (let index = 0; index < 26; index += 1) {
+    const textureKeys = ['pixel-star', 'pixel-chip', 'pixel-bolt', 'spark'] as const;
+    for (let index = 0; index < 32; index += 1) {
       const texture = textureKeys[index % textureKeys.length];
       const burst = this.add.image(goalX, 514, texture);
       const tint = [accent, 0xffcb63, 0xffffff][index % 3];
-      const angle = Phaser.Math.FloatBetween(-1.2, 1.2);
-      const distance = Phaser.Math.Between(120, 360);
-      const yLift = Phaser.Math.Between(-220, -40);
+      const angle = Phaser.Math.FloatBetween(-1.4, 1.4);
+      const distance = Phaser.Math.Between(140, 380);
+      const yLift = Phaser.Math.Between(-240, -30);
 
       burst.setTint(tint);
       burst.setDepth(59);
-      burst.setScale(Phaser.Math.FloatBetween(1.6, 3.1));
+      burst.setBlendMode(Phaser.BlendModes.ADD);
+      burst.setScale(Phaser.Math.FloatBetween(1.2, 3.3));
       overlay.add(burst);
 
       this.tweens.add({
         targets: burst,
         x: goalX + Math.cos(angle) * distance,
-        y: 514 + yLift + Math.sin(angle) * 24,
+        y: 514 + yLift + Math.sin(angle) * 30,
         alpha: 0,
-        angle: Phaser.Math.Between(-70, 70),
-        scale: burst.scale * 0.6,
-        duration: Phaser.Math.Between(520, 760),
+        angle: Phaser.Math.Between(-90, 90),
+        scale: burst.scale * 0.45,
+        duration: Phaser.Math.Between(520, 780),
         ease: 'Cubic.Out',
         onComplete: () => burst.destroy(),
       });
@@ -683,14 +697,14 @@ export class MatchScene extends Phaser.Scene {
     this.tweens.add({
       targets: overlay,
       alpha: 0,
-      delay: 860,
+      delay: 920,
       duration: 220,
       ease: 'Quad.In',
       onComplete: () => overlay.destroy(),
     });
   }
 
-  private drawPixelPanel(
+  private drawShowPanel(
     graphics: Phaser.GameObjects.Graphics,
     x: number,
     y: number,
@@ -698,30 +712,163 @@ export class MatchScene extends Phaser.Scene {
     height: number,
     accent: number,
   ): void {
-    const block = 12;
-
     graphics.fillStyle(0x082030, 0.94);
-    graphics.fillRect(x, y, width, height);
-    graphics.fillStyle(0xffffff, 0.07);
-    graphics.fillRect(x + 18, y + 18, width - 36, 44);
-    graphics.fillStyle(accent, 0.95);
-    graphics.fillRect(x + 18, y + height - 34, width - 36, 12);
+    graphics.fillRoundedRect(x, y, width, height, 28);
+    graphics.fillStyle(0xffffff, 0.06);
+    graphics.fillRoundedRect(x + 18, y + 18, width - 36, 46, 18);
+    graphics.fillStyle(accent, 0.18);
+    graphics.fillRoundedRect(x + 22, y + 92, width - 44, 64, 24);
+    graphics.lineStyle(6, accent, 1);
+    graphics.strokeRoundedRect(x, y, width, height, 28);
+    graphics.fillStyle(0xffcb63, 0.95);
+    graphics.fillRoundedRect(x + 24, y + height - 28, width - 48, 12, 8);
+  }
 
-    for (let px = 0; px < width; px += block) {
-      graphics.fillStyle(accent, 0.98);
-      graphics.fillRect(x + px, y, block, block);
-      graphics.fillRect(x + px, y + height - block, block, block);
+  private spawnBallTrail(time: number): void {
+    const activeSpecialId = this.ball.getActiveSpecialId();
+
+    if (!activeSpecialId || time - this.lastBallTrailAt < 42) {
+      return;
     }
 
-    for (let py = 0; py < height; py += block) {
-      graphics.fillStyle(accent, 0.98);
-      graphics.fillRect(x, y + py, block, block);
-      graphics.fillRect(x + width - block, y + py, block, block);
+    this.lastBallTrailAt = time;
+    const special = getSpecialById(activeSpecialId);
+    const texture = activeSpecialId === 'curve-touch' ? 'pixel-bolt' : 'pixel-star';
+    const trail = this.add.image(this.ball.x, this.ball.y, texture);
+
+    trail.setTint(special.color);
+    trail.setDepth(7);
+    trail.setScale(activeSpecialId === 'curve-touch' ? 0.88 : 1.05);
+    trail.setBlendMode(Phaser.BlendModes.ADD);
+
+    this.tweens.add({
+      targets: trail,
+      alpha: 0,
+      scale: trail.scale * 0.4,
+      duration: 220,
+      ease: 'Quad.Out',
+      onComplete: () => trail.destroy(),
+    });
+  }
+
+  private playGoalExplosion(goalX: number, accent: number): void {
+    this.spawnBurst(goalX, 520, accent, 20);
+    this.spawnBurst(goalX, 484, 0xffffff, 14);
+    this.spawnImpactRing(goalX, 520, accent, 1.7);
+    this.spawnImpactRing(goalX, 520, 0xffffff, 1.25);
+  }
+
+  private playGoalCelebration(player: Player, accent: number): void {
+    const celebration = Phaser.Utils.Array.GetRandom(player.character.celebrations);
+    const label = this.add
+      .text(player.x, player.y - 118, celebration.label, {
+        ...TEXT_STYLES.body,
+        fontSize: '18px',
+      })
+      .setOrigin(0.5)
+      .setDepth(59);
+    const startX = player.x;
+    const startY = player.y;
+
+    switch (celebration.style) {
+      case 'pump':
+        this.tweens.add({
+          targets: player,
+          scaleX: 1.06,
+          scaleY: 0.88,
+          yoyo: true,
+          repeat: 2,
+          duration: 120,
+        });
+        break;
+      case 'spin':
+        this.tweens.add({
+          targets: player,
+          angle: player.angle + 360,
+          duration: 620,
+          ease: 'Cubic.Out',
+        });
+        break;
+      case 'slide':
+        this.tweens.add({
+          targets: player,
+          x: startX + player.facing * 52,
+          angle: player.facing * 10,
+          duration: 220,
+          yoyo: true,
+          ease: 'Sine.Out',
+        });
+        break;
+      case 'bounce':
+        this.tweens.add({
+          targets: player,
+          y: startY - 76,
+          scaleX: 1.02,
+          scaleY: 0.9,
+          duration: 240,
+          yoyo: true,
+          ease: 'Quad.Out',
+        });
+        break;
+      case 'pose':
+        this.tweens.add({
+          targets: player,
+          scaleX: 1.08,
+          scaleY: 0.86,
+          angle: player.facing * -8,
+          duration: 260,
+          yoyo: true,
+          ease: 'Back.Out',
+        });
+        break;
     }
 
-    graphics.fillStyle(0xffcb63, 0.96);
-    graphics.fillRect(x + 24, y + 24, 72, 12);
-    graphics.fillRect(x + width - 96, y + 24, 72, 12);
+    this.spawnBurst(player.x, player.y - 24, accent, 10);
+
+    this.tweens.add({
+      targets: label,
+      y: label.y - 36,
+      alpha: 0,
+      duration: 920,
+      ease: 'Quad.Out',
+      onComplete: () => label.destroy(),
+    });
+
+    this.time.delayedCall(960, () => {
+      player.setPosition(startX, startY);
+      player.setAngle(0);
+      player.setScale(0.94);
+    });
+  }
+
+  private playSpecialActivationSound(specialId: SpecialId): void {
+    if (specialId === 'dash-kick') {
+      audioService.play('dash');
+      return;
+    }
+
+    if (specialId === 'wall-block') {
+      audioService.play('wall');
+      return;
+    }
+
+    audioService.play('special');
+  }
+
+  private spawnImpactRing(x: number, y: number, tint: number, scale: number): void {
+    const ring = this.add.circle(x, y, 26, tint, 0);
+
+    ring.setDepth(21);
+    ring.setStrokeStyle(6, tint, 0.8);
+    this.tweens.add({
+      targets: ring,
+      scaleX: scale,
+      scaleY: scale,
+      alpha: 0,
+      duration: 280,
+      ease: 'Quad.Out',
+      onComplete: () => ring.destroy(),
+    });
   }
 
   private spawnBurst(
@@ -730,12 +877,15 @@ export class MatchScene extends Phaser.Scene {
     tint: number,
     count: number,
   ): void {
+    const textureKeys = ['spark', 'pixel-star', 'pixel-chip', 'pixel-bolt'] as const;
+
     for (let index = 0; index < count; index += 1) {
-      const spark = this.add.image(x, y, 'spark');
+      const spark = this.add.image(x, y, textureKeys[index % textureKeys.length]);
       const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
-      const distance = Phaser.Math.Between(20, 88);
+      const distance = Phaser.Math.Between(26, 102);
 
       spark.setTint(tint);
+      spark.setBlendMode(Phaser.BlendModes.ADD);
       spark.setDepth(22);
 
       this.tweens.add({
@@ -743,6 +893,7 @@ export class MatchScene extends Phaser.Scene {
         x: x + Math.cos(angle) * distance,
         y: y + Math.sin(angle) * distance,
         alpha: 0,
+        angle: Phaser.Math.Between(-60, 60),
         scale: Phaser.Math.FloatBetween(0.4, 1.8),
         duration: Phaser.Math.Between(260, 460),
         ease: 'Quad.Out',

@@ -34,8 +34,8 @@ export class TouchControls {
       return;
     }
 
-    this.createButton(108, 610, 46, '좌', 'left', 0x082030);
-    this.createButton(226, 610, 46, '우', 'right', 0x082030);
+    this.createButton(108, 610, 46, '←', 'left', 0x082030);
+    this.createButton(226, 610, 46, '→', 'right', 0x082030);
     this.createButton(1_058, 610, 50, '점프', 'jump', 0x53c7ff);
     this.createButton(1_170, 618, 58, '슛', 'kick', 0xffcb63);
     this.createButton(1_102, 516, 52, '필살', 'special', 0xff6b57);
@@ -85,7 +85,7 @@ export class TouchControls {
     background.setScrollFactor(0);
     label.setScrollFactor(0);
     background.setInteractive(
-      new Phaser.Geom.Circle(radius, radius, radius + 14),
+      new Phaser.Geom.Circle(0, 0, radius + 14),
       Phaser.Geom.Circle.Contains,
     );
 

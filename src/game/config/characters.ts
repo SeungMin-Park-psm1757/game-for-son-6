@@ -5,7 +5,7 @@ export const CHARACTERS: CharacterConfig[] = [
     id: 'blaze',
     name: '블레이즈',
     title: '태양 슈터',
-    intro: '불꽃 로켓슛으로 공을 강하게 밀어붙인다.',
+    intro: '강한 전진력으로 슛을 뜨겁게 밀어 넣는 공격수다.',
     specialId: 'fire-shot',
     unlockCost: 0,
     visuals: {
@@ -21,12 +21,19 @@ export const CHARACTERS: CharacterConfig[] = [
       kick: 1.12,
       meterGain: 1,
     },
+    celebrations: [
+      { label: '태양 슬라이드', style: 'slide' },
+      { label: '불꽃 점프', style: 'bounce' },
+      { label: '챔피언 펌프', style: 'pump' },
+      { label: '회전 발차기', style: 'spin' },
+      { label: '포효 포즈', style: 'pose' },
+    ],
   },
   {
     id: 'bolt',
     name: '볼트',
-    title: '터보 트릭커',
-    intro: '순간 돌진으로 빈틈을 찌르는 대시 킥을 꽂아 넣는다.',
+    title: '터보 트리커',
+    intro: '순간 가속으로 틈을 파고드는 스피드형 공격수다.',
     specialId: 'dash-kick',
     unlockCost: 0,
     visuals: {
@@ -42,12 +49,19 @@ export const CHARACTERS: CharacterConfig[] = [
       kick: 0.98,
       meterGain: 1.06,
     },
+    celebrations: [
+      { label: '터보 질주', style: 'slide' },
+      { label: '번개 펌프', style: 'pump' },
+      { label: '스핀 대시', style: 'spin' },
+      { label: '플래시 점프', style: 'bounce' },
+      { label: '하이 포즈', style: 'pose' },
+    ],
   },
   {
     id: 'atlas',
     name: '아틀라스',
     title: '골문 수문장',
-    intro: '짧게 유지되는 벽을 세워 강슛을 막아낸다.',
+    intro: '묵직한 체격으로 공중볼과 몸싸움에 강한 수비수다.',
     specialId: 'wall-block',
     unlockCost: 120,
     visuals: {
@@ -63,12 +77,19 @@ export const CHARACTERS: CharacterConfig[] = [
       kick: 1.04,
       meterGain: 1.08,
     },
+    celebrations: [
+      { label: '가드 포즈', style: 'pose' },
+      { label: '거인 점프', style: 'bounce' },
+      { label: '철벽 펌프', style: 'pump' },
+      { label: '수문장 스핀', style: 'spin' },
+      { label: '대지 슬라이드', style: 'slide' },
+    ],
   },
   {
     id: 'ripple',
     name: '리플',
     title: '커브 장인',
-    intro: '공에 흔들리는 회전을 실어 궤적을 휘게 만든다.',
+    intro: '휘어 나가는 터치로 수비 라인을 흔드는 테크니션이다.',
     specialId: 'curve-touch',
     unlockCost: 180,
     visuals: {
@@ -84,6 +105,13 @@ export const CHARACTERS: CharacterConfig[] = [
       kick: 1,
       meterGain: 1.14,
     },
+    celebrations: [
+      { label: '웨이브 포즈', style: 'pose' },
+      { label: '곡선 스핀', style: 'spin' },
+      { label: '리듬 슬라이드', style: 'slide' },
+      { label: '리듬 점프', style: 'bounce' },
+      { label: '바운스 펌프', style: 'pump' },
+    ],
   },
 ];
 

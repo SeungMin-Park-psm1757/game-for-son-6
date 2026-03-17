@@ -3,7 +3,7 @@ import type { StadiumConfig } from '../types/StadiumConfig';
 export const STADIUMS: StadiumConfig[] = [
   {
     id: 'sunset-arena',
-    name: '노을 경기장',
+    name: '노을 스타디움',
     skyTop: 0xffb15e,
     skyBottom: 0xff6b57,
     crowd: 0x5c2945,

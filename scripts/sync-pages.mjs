@@ -1,4 +1,11 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, copyFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+} from 'node:fs';
 import { join } from 'node:path';
 
 const root = process.cwd();
@@ -7,8 +14,8 @@ const distAssetsDir = join(distDir, 'assets');
 const distArtDir = join(distDir, 'art');
 const targetAssetsDir = join(root, 'assets');
 const targetArtDir = join(root, 'art');
-const publicFaviconFile = join(root, 'public', 'favicon.svg');
-const targetFaviconFile = join(root, 'favicon.svg');
+const publicDir = join(root, 'public');
+const publicFiles = ['favicon.svg', 'manifest.webmanifest'];
 
 if (!existsSync(distAssetsDir)) {
   throw new Error('Missing dist/assets directory. Run Vite build first.');
@@ -35,6 +42,9 @@ if (!jsFile || !cssFile) {
 copyFileSync(join(targetAssetsDir, jsFile), join(targetAssetsDir, 'app.js'));
 copyFileSync(join(targetAssetsDir, cssFile), join(targetAssetsDir, 'app.css'));
 
-if (existsSync(publicFaviconFile)) {
-  copyFileSync(publicFaviconFile, targetFaviconFile);
+for (const file of publicFiles) {
+  const source = join(publicDir, file);
+  if (existsSync(source)) {
+    copyFileSync(source, join(root, file));
+  }
 }

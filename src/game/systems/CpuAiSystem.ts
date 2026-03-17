@@ -40,55 +40,74 @@ export class CpuAiSystem {
 
     this.nextThinkAt = time + this.profile.reactionMs;
     const homeX = FIELD_BOUNDS.playableRight - 118;
-    const goalDanger =
-      context.ballVelocityX > 120 && context.ballX > FIELD_BOUNDS.playableRight - 320;
+    const projectedBallX = Phaser.Math.Clamp(
+      context.ballX + context.ballVelocityX * 0.16,
+      FIELD_BOUNDS.playableLeft,
+      FIELD_BOUNDS.playableRight,
+    );
+    const projectedBallY = Phaser.Math.Clamp(
+      context.ballY + context.ballVelocityY * 0.12,
+      FIELD_BOUNDS.ceilingY,
+      FIELD_BOUNDS.floorY,
+    );
     const losing = context.cpuScore < context.playerScore;
     const lateGame = context.remainingMs < 12_000;
+    const defendUrgent =
+      projectedBallX > FIELD_BOUNDS.playableRight - 280 ||
+      (context.ballVelocityX > 180 && context.ballX > FIELD_BOUNDS.playableRight - 360);
+    const attackWindow =
+      projectedBallX > FIELD_BOUNDS.playableLeft + 380 &&
+      projectedBallX < FIELD_BOUNDS.playableRight - 120;
 
     let targetX = homeX;
 
-    if (goalDanger || (lateGame && !losing)) {
-      targetX =
-        context.ballX > FIELD_BOUNDS.playableRight - 420
-          ? context.ballX - 18
-          : homeX;
-    } else if (
-      context.ballX > FIELD_BOUNDS.playableLeft + 420 ||
-      losing ||
-      Math.random() < this.profile.aggression
-    ) {
+    if (defendUrgent) {
+      targetX = Math.min(homeX + 32, projectedBallX - 18);
+    } else if (losing || lateGame || Math.random() < this.profile.aggression) {
       targetX = Phaser.Math.Linear(
-        context.ballX,
+        projectedBallX,
         homeX,
         this.profile.defendBias,
       );
+    } else if (attackWindow) {
+      targetX = Phaser.Math.Linear(projectedBallX, homeX, 0.52);
     }
 
     targetX += Phaser.Math.Between(
       -this.profile.targetError,
       this.profile.targetError,
     );
+    targetX = Phaser.Math.Clamp(
+      targetX,
+      FIELD_BOUNDS.playableLeft + 360,
+      FIELD_BOUNDS.playableRight - 72,
+    );
 
     const horizontalDelta = targetX - context.cpuX;
-    const moveLeft = horizontalDelta < -24;
-    const moveRight = horizontalDelta > 24;
-    const ballNear = Math.abs(context.ballX - context.cpuX) < 120;
-    const ballAbove = context.ballY < context.cpuY - 30;
+    const moveLeft = horizontalDelta < -22;
+    const moveRight = horizontalDelta > 22;
+    const ballNear = Math.abs(context.ballX - context.cpuX) < 126;
+    const projectedNear = Math.abs(projectedBallX - context.cpuX) < 110;
+    const ballAbove = context.ballY < context.cpuY - 28;
     const shouldJump =
-      ballNear &&
-      ballAbove &&
-      Math.random() < this.profile.jumpChance &&
-      context.ballVelocityY > -160;
+      (projectedNear &&
+        projectedBallY < context.cpuY - 12 &&
+        projectedBallY > context.cpuY - 188 &&
+        Math.random() < this.profile.jumpChance) ||
+      (ballNear &&
+        ballAbove &&
+        Math.random() < this.profile.jumpChance &&
+        context.ballVelocityY > -220);
     const shouldKick =
-      Math.abs(context.ballX - context.cpuX) < 110 &&
-      Math.abs(context.ballY - context.cpuY) < 100 &&
-      context.ballX <= context.cpuX + 100;
+      Math.abs(projectedBallX - context.cpuX) < 114 &&
+      Math.abs(projectedBallY - context.cpuY) < 104 &&
+      projectedBallX <= context.cpuX + 96;
     const shouldSpecial =
       context.canSpecial &&
-      ballNear &&
-      (context.ballX > FIELD_BOUNDS.playableRight - 320 ||
-        context.ballVelocityX < -120 ||
-        Math.random() < this.profile.specialChance);
+      ((defendUrgent && projectedNear) ||
+        (losing && ballNear) ||
+        (context.ballVelocityX < -140 && ballNear) ||
+        Math.random() < this.profile.specialChance * 0.4);
 
     this.cachedActions = {
       left: moveLeft && !moveRight,

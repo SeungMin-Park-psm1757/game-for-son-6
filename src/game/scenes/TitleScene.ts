@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { STADIUMS } from '../config/stadiums';
 import { TEXT_STYLES } from '../constants/ui';
 import { audioService } from '../services/AudioService';
+import { displayService } from '../services/DisplayService';
 import { saveService } from '../services/SaveService';
 import { TextButton } from '../ui/Buttons';
 import { drawStadiumBackdrop } from '../ui/StadiumBackdrop';
@@ -22,42 +23,66 @@ export class TitleScene extends Phaser.Scene {
       void audioService.unlock();
     });
 
-    this.add.text(640, 128, '골팝 아레나', TEXT_STYLES.headline).setOrigin(0.5);
+    this.add.text(640, 94, '골팝 아레나', TEXT_STYLES.headline).setOrigin(0.5);
     this.add
-      .text(640, 192, '큰 머리, 작은 몸, 황당하게 시원한 슛!', TEXT_STYLES.body)
+      .text(
+        640,
+        148,
+        '큰 머리, 짧은 경기, 강한 슛으로 승부하는 1대1 아케이드 축구',
+        TEXT_STYLES.body,
+      )
       .setOrigin(0.5);
-    this.profileText = this.add.text(640, 250, '', TEXT_STYLES.body).setOrigin(0.5);
+
+    this.profileText = this.add.text(640, 198, '', TEXT_STYLES.body).setOrigin(0.5);
 
     const playButton = new TextButton(
       this,
-      640,
-      360,
-      '바로 경기 시작',
+      418,
+      292,
+      '경기 시작',
       () => {
         void audioService.unlock();
+        void displayService.requestImmersiveMode();
         audioService.play('tap');
         this.scene.start('CharacterSelectScene');
       },
       {
-        width: 330,
-        height: 78,
+        width: 250,
+        height: 72,
         fillColor: 0xffcb63,
+      },
+    );
+
+    const fullscreenButton = new TextButton(
+      this,
+      640,
+      292,
+      '전체화면',
+      () => {
+        void audioService.unlock();
+        void displayService.requestImmersiveMode();
+        audioService.play('resume');
+      },
+      {
+        width: 220,
+        height: 72,
+        fillColor: 0x87e6ff,
       },
     );
 
     const tutorialButton = new TextButton(
       this,
-      640,
-      452,
-      '플레이 방법',
+      862,
+      292,
+      '자세한 조작',
       () => {
         audioService.play('tap');
         this.tutorialOverlay.setVisible(true);
       },
       {
-        width: 280,
-        height: 68,
-        fillColor: 0x87e6ff,
+        width: 250,
+        height: 72,
+        fillColor: 0xff6b57,
       },
     );
 
@@ -85,14 +110,31 @@ export class TitleScene extends Phaser.Scene {
       },
     );
 
+    this.createInfoCard(
+      368,
+      522,
+      '키보드',
+      ['A / D 이동', 'W 점프', 'Space 슛', 'Shift 필살기', 'Esc 일시정지'],
+      0xffcb63,
+    );
+    this.createInfoCard(
+      912,
+      522,
+      '휴대폰',
+      ['왼쪽 원 2개로 이동', '파랑 점프', '노랑 슛', '빨강 필살기', '오른쪽 위 II 일시정지'],
+      0x87e6ff,
+    );
+
     this.add
       .text(
         640,
-        626,
-        '휴대폰에서도 가볍게 즐기는 1대1 아케이드 축구.',
+        664,
+        '모바일 크롬에서는 전체화면 버튼을 누르거나 홈 화면에 추가하면 주소창 없이 더 넓게 플레이할 수 있다.',
         {
           ...TEXT_STYLES.body,
           fontSize: '18px',
+          wordWrap: { width: 960 },
+          align: 'center',
         },
       )
       .setOrigin(0.5);
@@ -101,6 +143,7 @@ export class TitleScene extends Phaser.Scene {
     this.refreshProfile();
 
     playButton.setDepth(2);
+    fullscreenButton.setDepth(2);
     tutorialButton.setDepth(2);
     this.soundButton.setDepth(2);
   }
@@ -108,36 +151,75 @@ export class TitleScene extends Phaser.Scene {
   private refreshProfile(): void {
     const saveData = saveService.getSnapshot();
     this.profileText.setText(
-      `코인 ${saveData.coins}   |   선수단 ${saveData.unlockedCharacters.length}/4   |   누적 골 ${saveData.stats.goalsScored}`,
+      `코인 ${saveData.coins}   |   해금 선수 ${saveData.unlockedCharacters.length}/4   |   총 득점 ${saveData.stats.goalsScored}`,
     );
     this.soundButton.setLabel(saveData.settings.soundOn ? '소리 켜짐' : '소리 꺼짐');
   }
 
+  private createInfoCard(
+    x: number,
+    y: number,
+    title: string,
+    lines: string[],
+    accent: number,
+  ): void {
+    const panel = this.add.graphics();
+    panel.fillStyle(0x082030, 0.8);
+    panel.fillRoundedRect(x - 210, y - 112, 420, 224, 28);
+    panel.lineStyle(5, accent, 1);
+    panel.strokeRoundedRect(x - 210, y - 112, 420, 224, 28);
+    panel.fillStyle(0xffffff, 0.06);
+    panel.fillRoundedRect(x - 190, y - 84, 380, 42, 18);
+
+    this.add
+      .text(x, y - 64, title, {
+        ...TEXT_STYLES.title,
+        color: Phaser.Display.Color.IntegerToColor(accent).rgba,
+      })
+      .setOrigin(0.5);
+    this.add
+      .text(x, y + 18, lines.join('\n'), {
+        ...TEXT_STYLES.body,
+        fontSize: '18px',
+        lineSpacing: 8,
+        align: 'center',
+      })
+      .setOrigin(0.5);
+  }
+
   private createTutorialOverlay(): Phaser.GameObjects.Container {
     const panel = this.add.graphics();
-    panel.fillStyle(0x041119, 0.84);
-    panel.fillRoundedRect(-270, -184, 540, 368, 30);
+    panel.fillStyle(0x041119, 0.9);
+    panel.fillRoundedRect(-300, -210, 600, 420, 30);
     panel.lineStyle(5, 0xffcb63, 1);
-    panel.strokeRoundedRect(-270, -184, 540, 368, 30);
+    panel.strokeRoundedRect(-300, -210, 600, 420, 30);
 
     const title = this.add
-      .text(0, -136, '빠른 설명', TEXT_STYLES.title)
+      .text(0, -158, '조작 한눈에 보기', TEXT_STYLES.title)
       .setOrigin(0.5);
     const body = this.add.text(
       0,
-      -22,
+      -14,
       [
-        'A / D 또는 좌우 버튼으로 이동',
-        'W 또는 점프로 공중볼에 대응',
-        'SPACE 또는 슛으로 강하게 차기',
-        '게이지가 차면 SHIFT 또는 필살 발동',
-        '시간이 끝나기 전 더 많은 골 넣기',
-        '비기면 연장전, 그래도 비기면 골든골',
+        '[키보드]',
+        'A / D: 좌우 이동',
+        'W: 점프',
+        'Space: 슛',
+        'Shift: 필살기',
+        'Esc: 일시정지',
+        '',
+        '[휴대폰]',
+        '왼쪽 원 2개: 좌우 이동',
+        '파랑 버튼: 점프',
+        '노랑 버튼: 슛',
+        '빨강 버튼: 필살기',
+        '오른쪽 위 II: 일시정지',
       ].join('\n'),
       {
         ...TEXT_STYLES.body,
+        fontSize: '18px',
         align: 'center',
-        lineSpacing: 10,
+        lineSpacing: 8,
       },
     );
     body.setOrigin(0.5);
@@ -146,14 +228,14 @@ export class TitleScene extends Phaser.Scene {
     const closeButton = new TextButton(
       this,
       0,
-      118,
-      '바로 해볼래',
+      148,
+      '닫기',
       () => {
         audioService.play('tap');
         overlay.setVisible(false);
       },
       {
-        width: 240,
+        width: 220,
         height: 62,
         fillColor: 0xffcb63,
       },

@@ -108,7 +108,11 @@ export class HudLayer {
 
   updateClock(remainingMs: number, overtime: boolean, suddenDeath: boolean): void {
     this.timerText.setText(
-      suddenDeath ? '골든골' : overtime ? `연장 ${formatClock(remainingMs)}` : formatClock(remainingMs),
+      suddenDeath
+        ? '골든골'
+        : overtime
+          ? `연장 ${formatClock(remainingMs)}`
+          : formatClock(remainingMs),
     );
   }
 

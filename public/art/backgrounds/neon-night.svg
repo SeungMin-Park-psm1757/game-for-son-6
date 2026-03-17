@@ -1,94 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <linearGradient id="nightSky" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#12355e" />
-      <stop offset=".44" stop-color="#224a7d" />
-      <stop offset="1" stop-color="#31487d" />
+      <stop offset="0" stop-color="#13345f" />
+      <stop offset=".56" stop-color="#284976" />
+      <stop offset="1" stop-color="#2a3560" />
     </linearGradient>
-    <linearGradient id="nightGrass" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#34a97c" />
-      <stop offset="1" stop-color="#177150" />
+    <linearGradient id="nightPitch" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#35b37e" />
+      <stop offset="1" stop-color="#166d51" />
+    </linearGradient>
+    <linearGradient id="nightStand" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#2b2d67" />
+      <stop offset="1" stop-color="#181d43" />
     </linearGradient>
   </defs>
   <rect width="1280" height="720" fill="url(#nightSky)" />
-  <circle cx="252" cy="132" r="96" fill="#8be6ff" opacity=".22" />
-  <circle cx="252" cy="132" r="48" fill="#c6f8ff" opacity=".35" />
-  <path d="M0 180c143-20 290-15 438 17 156 33 324 30 473-8 131-33 242-31 369 8v125H0z" fill="#22324b" opacity=".72" />
-  <path d="M0 266c131-33 249-40 395-28 191 15 399 18 555-7 119-19 226-16 330 17v156H0z" fill="#2a305a" />
-  <rect x="0" y="360" width="1280" height="48" fill="#182145" />
-  <rect x="0" y="382" width="1280" height="30" fill="#202857" />
-  <g opacity=".95">
-    <rect x="0" y="214" width="1280" height="106" fill="#2a2e63" />
-    <g fill="#d5f7ff">
-      <rect x="28" y="230" width="20" height="10" rx="4" />
-      <rect x="88" y="230" width="20" height="10" rx="4" />
-      <rect x="148" y="230" width="20" height="10" rx="4" />
-      <rect x="208" y="230" width="20" height="10" rx="4" />
-      <rect x="268" y="230" width="20" height="10" rx="4" />
-      <rect x="328" y="230" width="20" height="10" rx="4" />
-      <rect x="388" y="230" width="20" height="10" rx="4" />
-      <rect x="448" y="230" width="20" height="10" rx="4" />
-      <rect x="508" y="230" width="20" height="10" rx="4" />
-      <rect x="568" y="230" width="20" height="10" rx="4" />
-      <rect x="628" y="230" width="20" height="10" rx="4" />
-      <rect x="688" y="230" width="20" height="10" rx="4" />
-      <rect x="748" y="230" width="20" height="10" rx="4" />
-      <rect x="808" y="230" width="20" height="10" rx="4" />
-      <rect x="868" y="230" width="20" height="10" rx="4" />
-      <rect x="928" y="230" width="20" height="10" rx="4" />
-      <rect x="988" y="230" width="20" height="10" rx="4" />
-      <rect x="1048" y="230" width="20" height="10" rx="4" />
-      <rect x="1108" y="230" width="20" height="10" rx="4" />
-      <rect x="1168" y="230" width="20" height="10" rx="4" />
-    </g>
-    <g fill="#7f9dff">
-      <rect x="2" y="256" width="20" height="10" rx="4" />
-      <rect x="62" y="256" width="20" height="10" rx="4" />
-      <rect x="122" y="256" width="20" height="10" rx="4" />
-      <rect x="182" y="256" width="20" height="10" rx="4" />
-      <rect x="242" y="256" width="20" height="10" rx="4" />
-      <rect x="302" y="256" width="20" height="10" rx="4" />
-      <rect x="362" y="256" width="20" height="10" rx="4" />
-      <rect x="422" y="256" width="20" height="10" rx="4" />
-      <rect x="482" y="256" width="20" height="10" rx="4" />
-      <rect x="542" y="256" width="20" height="10" rx="4" />
-      <rect x="602" y="256" width="20" height="10" rx="4" />
-      <rect x="662" y="256" width="20" height="10" rx="4" />
-      <rect x="722" y="256" width="20" height="10" rx="4" />
-      <rect x="782" y="256" width="20" height="10" rx="4" />
-      <rect x="842" y="256" width="20" height="10" rx="4" />
-      <rect x="902" y="256" width="20" height="10" rx="4" />
-      <rect x="962" y="256" width="20" height="10" rx="4" />
-      <rect x="1022" y="256" width="20" height="10" rx="4" />
-      <rect x="1082" y="256" width="20" height="10" rx="4" />
-      <rect x="1142" y="256" width="20" height="10" rx="4" />
-      <rect x="1202" y="256" width="20" height="10" rx="4" />
-    </g>
+  <circle cx="226" cy="126" r="72" fill="#9ae7ff" opacity=".2" />
+  <circle cx="226" cy="126" r="40" fill="#d3fbff" opacity=".3" />
+  <path d="M0 286c120-46 256-62 410-46 150 16 288 42 416 42 144 0 261-31 454-68v180H0z" fill="#1e3151" opacity=".74" />
+  <path d="M0 334c171-23 305-18 454 25 112 31 226 45 337 45 157 0 277-28 489-74v190H0z" fill="url(#nightStand)" />
+  <rect x="0" y="438" width="1280" height="52" fill="#1a2149" />
+  <g opacity=".92">
+    <rect x="0" y="384" width="1280" height="36" fill="#28306a" />
+    <rect x="32" y="394" width="86" height="14" rx="7" fill="#7a9fff" />
+    <rect x="144" y="394" width="86" height="14" rx="7" fill="#d7fbff" />
+    <rect x="256" y="394" width="86" height="14" rx="7" fill="#86f1d0" />
+    <rect x="368" y="394" width="86" height="14" rx="7" fill="#bfd8ff" />
+    <rect x="480" y="394" width="86" height="14" rx="7" fill="#7a9fff" />
+    <rect x="592" y="394" width="86" height="14" rx="7" fill="#d7fbff" />
+    <rect x="704" y="394" width="86" height="14" rx="7" fill="#86f1d0" />
+    <rect x="816" y="394" width="86" height="14" rx="7" fill="#bfd8ff" />
+    <rect x="928" y="394" width="86" height="14" rx="7" fill="#7a9fff" />
+    <rect x="1040" y="394" width="86" height="14" rx="7" fill="#d7fbff" />
+    <rect x="1152" y="394" width="86" height="14" rx="7" fill="#86f1d0" />
   </g>
-  <rect x="0" y="420" width="1280" height="300" fill="url(#nightGrass)" />
-  <g opacity=".34">
-    <rect x="0" y="420" width="100" height="300" fill="#6dd5aa" />
-    <rect x="210" y="420" width="110" height="300" fill="#6dd5aa" />
-    <rect x="420" y="420" width="110" height="300" fill="#6dd5aa" />
-    <rect x="630" y="420" width="110" height="300" fill="#6dd5aa" />
-    <rect x="840" y="420" width="110" height="300" fill="#6dd5aa" />
-    <rect x="1050" y="420" width="110" height="300" fill="#6dd5aa" />
+  <g opacity=".88">
+    <rect x="0" y="458" width="1280" height="34" fill="#27325f" />
+    <rect x="24" y="468" width="78" height="12" rx="6" fill="#85a9ff" />
+    <rect x="136" y="468" width="78" height="12" rx="6" fill="#8ee9d4" />
+    <rect x="248" y="468" width="78" height="12" rx="6" fill="#e0fcff" />
+    <rect x="360" y="468" width="78" height="12" rx="6" fill="#afceff" />
+    <rect x="472" y="468" width="78" height="12" rx="6" fill="#85a9ff" />
+    <rect x="584" y="468" width="78" height="12" rx="6" fill="#8ee9d4" />
+    <rect x="696" y="468" width="78" height="12" rx="6" fill="#e0fcff" />
+    <rect x="808" y="468" width="78" height="12" rx="6" fill="#afceff" />
+    <rect x="920" y="468" width="78" height="12" rx="6" fill="#85a9ff" />
+    <rect x="1032" y="468" width="78" height="12" rx="6" fill="#8ee9d4" />
+    <rect x="1144" y="468" width="78" height="12" rx="6" fill="#e0fcff" />
   </g>
-  <rect x="0" y="430" width="1280" height="10" fill="#c5fcff" opacity=".12" />
-  <rect x="0" y="610" width="1280" height="6" fill="#123a31" opacity=".36" />
-  <rect x="0" y="684" width="1280" height="14" fill="#153c31" opacity=".4" />
-  <rect x="212" y="492" width="856" height="8" rx="4" fill="#d6fff9" opacity=".52" />
-  <rect x="212" y="654" width="856" height="8" rx="4" fill="#d6fff9" opacity=".35" />
-  <rect x="638" y="492" width="4" height="168" fill="#d6fff9" opacity=".3" />
-  <ellipse cx="640" cy="575" rx="74" ry="74" fill="none" stroke="#d6fff9" stroke-opacity=".28" stroke-width="6" />
-  <g opacity=".85" stroke="#eafcff" stroke-width="6">
-    <rect x="28" y="438" width="112" height="178" fill="#d9ffff12" />
-    <rect x="1140" y="438" width="112" height="178" fill="#d9ffff12" />
+  <rect x="0" y="492" width="1280" height="228" fill="url(#nightPitch)" />
+  <rect x="0" y="492" width="1280" height="18" fill="#9effd3" opacity=".16" />
+  <rect x="0" y="612" width="1280" height="10" fill="#153a31" opacity=".34" />
+  <rect x="0" y="684" width="1280" height="18" fill="#153a31" opacity=".46" />
+  <rect x="0" y="548" width="1280" height="8" fill="#d5fff6" opacity=".18" />
+  <rect x="0" y="652" width="1280" height="8" fill="#d5fff6" opacity=".16" />
+  <path d="M214 548h852" stroke="#d6fff9" stroke-linecap="round" stroke-opacity=".38" stroke-width="7" />
+  <path d="M214 652h852" stroke="#d6fff9" stroke-linecap="round" stroke-opacity=".28" stroke-width="7" />
+  <g opacity=".88" stroke="#eafcff" stroke-width="7">
+    <rect x="26" y="438" width="112" height="178" fill="#d9ffff12" />
+    <rect x="1142" y="438" width="112" height="178" fill="#d9ffff12" />
   </g>
-  <g opacity=".42" stroke="#d8ffff" stroke-width="2">
+  <g opacity=".4" stroke="#d8ffff" stroke-width="2">
     <path d="M36 454h96M36 480h96M36 506h96M36 532h96M36 558h96M36 584h96" />
     <path d="M1148 454h96M1148 480h96M1148 506h96M1148 532h96M1148 558h96M1148 584h96" />
     <path d="M52 444v164M68 444v164M84 444v164M100 444v164M116 444v164" />
     <path d="M1164 444v164M1180 444v164M1196 444v164M1212 444v164M1228 444v164" />
+  </g>
+  <g opacity=".4">
+    <circle cx="102" cy="122" r="5" fill="#d8ffff" />
+    <circle cx="182" cy="86" r="3" fill="#d8ffff" />
+    <circle cx="302" cy="118" r="4" fill="#d8ffff" />
+    <circle cx="1024" cy="88" r="5" fill="#d8ffff" />
+    <circle cx="1128" cy="122" r="4" fill="#d8ffff" />
+    <circle cx="1180" cy="94" r="3" fill="#d8ffff" />
   </g>
 </svg>

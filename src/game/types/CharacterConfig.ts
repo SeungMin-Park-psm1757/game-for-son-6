@@ -1,4 +1,10 @@
 export type SpecialId = 'fire-shot' | 'dash-kick' | 'wall-block' | 'curve-touch';
+export type CelebrationStyle = 'pump' | 'spin' | 'slide' | 'bounce' | 'pose';
+
+export interface CelebrationConfig {
+  label: string;
+  style: CelebrationStyle;
+}
 
 export interface CharacterVisualConfig {
   skin: number;
@@ -24,5 +30,5 @@ export interface CharacterConfig {
   unlockCost: number;
   visuals: CharacterVisualConfig;
   stats: CharacterStats;
+  celebrations: CelebrationConfig[];
 }
-

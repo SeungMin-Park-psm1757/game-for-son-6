@@ -7,6 +7,7 @@ import {
 } from '../constants/balance';
 import { TEXT_STYLES } from '../constants/ui';
 import { audioService } from '../services/AudioService';
+import { displayService } from '../services/DisplayService';
 import { saveService } from '../services/SaveService';
 import { sessionService } from '../services/SessionService';
 import { TextButton } from '../ui/Buttons';
@@ -39,26 +40,31 @@ export class CharacterSelectScene extends Phaser.Scene {
       void audioService.unlock();
     });
 
-    this.add
-      .text(640, 60, '선수를 골라줘', TEXT_STYLES.headline)
-      .setOrigin(0.5);
+    this.add.text(640, 56, '선수를 골라줘', TEXT_STYLES.headline).setOrigin(0.5);
     this.add
       .text(
         640,
-        112,
-        '선수와 경기장, 상대 난이도를 고르자.',
+        104,
+        '선수와 경기장, 상대 난이도를 고른 뒤 경기 시작을 누르자.',
         TEXT_STYLES.body,
       )
       .setOrigin(0.5);
 
     this.coinsText = this.add.text(140, 56, '', TEXT_STYLES.body).setOrigin(0.5);
-    this.noteText = this.add.text(640, 674, '', TEXT_STYLES.body).setOrigin(0.5);
+    this.noteText = this.add
+      .text(640, 498, '', {
+        ...TEXT_STYLES.body,
+        fontSize: '18px',
+        wordWrap: { width: 860 },
+        align: 'center',
+      })
+      .setOrigin(0.5);
 
     CHARACTERS.forEach((character, index) => {
       const card = new CharacterCard(
         this,
         186 + index * 302,
-        314,
+        292,
         character,
         (characterId) => this.handleCharacterPick(characterId),
       );
@@ -66,24 +72,27 @@ export class CharacterSelectScene extends Phaser.Scene {
       this.cards.push(card);
     });
 
-    this.add.text(262, 530, '난이도', TEXT_STYLES.title).setOrigin(0.5);
-    this.add.text(1_022, 530, '경기장', TEXT_STYLES.title).setOrigin(0.5);
+    this.add.text(352, 548, '난이도', TEXT_STYLES.title).setOrigin(0.5);
+    this.add.text(972, 548, '경기장', TEXT_STYLES.title).setOrigin(0.5);
 
     (Object.keys(DIFFICULTY_PROFILES) as DifficultyId[]).forEach(
       (difficultyId, index) => {
         const button = new TextButton(
           this,
-          180 + index * 160,
-          592,
+          190 + index * 170,
+          608,
           DIFFICULTY_PROFILES[difficultyId].label,
           () => {
             audioService.play('tap');
             this.selectedDifficulty = difficultyId;
+            this.noteText.setText(
+              `${DIFFICULTY_PROFILES[difficultyId].label} 난이도로 CPU 반응 속도와 공격성이 조정된다.`,
+            );
             this.refresh();
           },
           {
-            width: 138,
-            height: 58,
+            width: 146,
+            height: 60,
             fillColor: 0x87e6ff,
           },
         );
@@ -95,13 +104,13 @@ export class CharacterSelectScene extends Phaser.Scene {
     STADIUMS.forEach((stadium, index) => {
       const button = new TextButton(
         this,
-        928 + index * 190,
-        592,
+        892 + index * 214,
+        608,
         stadium.name,
         () => this.handleStadiumPick(stadium.id),
         {
-          width: 176,
-          height: 58,
+          width: 206,
+          height: 60,
           fillColor: 0xffcb63,
         },
       );
@@ -112,7 +121,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     new TextButton(
       this,
       150,
-      676,
+      672,
       '뒤로',
       () => {
         audioService.play('tap');
@@ -128,16 +137,17 @@ export class CharacterSelectScene extends Phaser.Scene {
     new TextButton(
       this,
       640,
-      620,
+      672,
       '경기 시작',
       () => {
         void audioService.unlock();
+        void displayService.requestImmersiveMode();
         audioService.play('tap');
         this.startMatch();
       },
       {
-        width: 274,
-        height: 74,
+        width: 300,
+        height: 66,
         fillColor: 0xff6b57,
       },
     );
@@ -184,13 +194,13 @@ export class CharacterSelectScene extends Phaser.Scene {
     if (saveService.tryUnlockCharacter(characterId, character.unlockCost)) {
       audioService.play('special');
       this.selectedCharacterId = characterId;
-      this.noteText.setText(`${character.name} 해금 완료! ${character.intro}`);
+      this.noteText.setText(`${character.name} 해금 완료. ${character.intro}`);
       this.refresh();
       return;
     }
 
     this.noteText.setText(
-      `${character.name} 해금에는 ${character.unlockCost}코인이 필요해.`,
+      `${character.name} 해금에는 ${character.unlockCost}코인이 필요하다.`,
     );
   }
 
@@ -211,7 +221,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     }
 
     this.noteText.setText(
-      `${stadium.name}은 누적 ${stadium.unlockGoals}골을 넣으면 열린다.`,
+      `${stadium.name}은 총 ${stadium.unlockGoals}골을 넣으면 열린다.`,
     );
   }
 
@@ -242,11 +252,15 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   private refresh(): void {
     const saveData = saveService.getSnapshot();
+    const selectedCharacter = getCharacterById(this.selectedCharacterId);
 
     this.coinsText.setText(`코인 ${saveData.coins}`);
     this.soundButton.setLabel(
       saveData.settings.soundOn ? '소리 켜짐' : '소리 꺼짐',
     );
+    if (!this.noteText.text) {
+      this.noteText.setText(`${selectedCharacter.name}: ${selectedCharacter.intro}`);
+    }
 
     this.cards.forEach((card) => {
       const unlocked = saveData.unlockedCharacters.includes(card.character.id);
@@ -259,6 +273,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     });
 
     this.difficultyButtons.forEach((button, difficultyId) => {
+      button.setEnabled(true);
       button.setSelected(difficultyId === this.selectedDifficulty);
     });
 
